@@ -30,7 +30,7 @@
 
               <div class="sheet__content dough">
                 <label
-                  v-for="dough in pizzas.dough"
+                  v-for="(dough, index) in pizzas.dough"
                   :key="dough.id"
                   :class="'dough__input dough__input--' + dough.class"
                 >
@@ -39,6 +39,7 @@
                     name="dought"
                     value="light"
                     class="visually-hidden"
+                    :checked="index === 0 ? true : false"
                   />
                   <b>{{ dough.name }}</b>
                   <span>{{ dough.description }}</span>
@@ -53,7 +54,7 @@
 
               <div class="sheet__content diameter">
                 <label
-                  v-for="sizes in pizzas.sizes"
+                  v-for="(sizes, index) in pizzas.sizes"
                   :key="sizes.id"
                   :class="'diameter__input diameter__input--' + sizes.class"
                 >
@@ -62,6 +63,7 @@
                     name="diameter"
                     value="small"
                     class="visually-hidden"
+                    :checked="index === 1 ? true : false"
                   />
                   <span>{{ sizes.name }}</span>
                 </label>
@@ -79,11 +81,16 @@
                 <div class="ingredients__sauce">
                   <p>Основной соус:</p>
                   <label
-                    v-for="sauces in pizzas.sauces"
+                    v-for="(sauces, index) in pizzas.sauces"
                     :key="sauces.id"
                     class="radio ingredients__input"
                   >
-                    <input type="radio" name="sauce" :value="sauces.value" />
+                    <input
+                      type="radio"
+                      name="sauce"
+                      :value="sauces.value"
+                      :checked="index === 0 ? true : false"
+                    />
                     <span>{{ sauces.name }}</span>
                   </label>
                 </div>
@@ -164,12 +171,13 @@
 import "@/static/misc.json";
 import pizzas from "@/static/pizza.json";
 import "@/static/user.json";
+import { normalizePizzas } from "@/common/helpers.js";
 
 export default {
   name: "Index",
   data() {
     return {
-      pizzas: pizzas,
+      pizzas: normalizePizzas(pizzas),
     };
   },
 };
