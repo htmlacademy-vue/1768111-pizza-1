@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AppLayout />
+    <AppLayout :orderPrice="orderPrice" />
 
     <main class="content">
       <form action="#" method="post">

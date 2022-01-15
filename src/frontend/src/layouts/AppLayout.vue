@@ -11,7 +11,7 @@
       </a>
     </div>
     <div class="header__cart">
-      <a href="cart.html">0 ₽</a>
+      <a href="cart.html">{{ orderPrice }} ₽</a>
     </div>
     <div class="header__user">
       <a href="#" class="header__login"><span>Войти</span></a>
@@ -22,8 +22,11 @@
 <script>
 export default {
   name: "AppLayout",
-  data() {
-    return {};
+  props: {
+    orderPrice: {
+      type: Number,
+      required: true,
+    },
   },
 };
 </script>

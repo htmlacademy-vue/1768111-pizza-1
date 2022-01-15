@@ -29,6 +29,7 @@
               v-for="ingredient in ingredients"
               :key="ingredient.id"
               :ingredient="ingredient"
+              :setIngredient="setIngredient"
             />
           </ul>
         </div>
@@ -44,6 +45,11 @@ import RadioButton from "@/common/components/RadioButton.vue";
 export default {
   name: "BuilderIngredientsSelector",
   components: { RadioButton, BuilderIngredientSelector },
+  data() {
+    return {
+      ingredientToOrder: {},
+    };
+  },
   props: {
     ingredients: {
       type: Array,
@@ -57,6 +63,10 @@ export default {
   methods: {
     setSauce(evt) {
       this.$emit("setSauce", evt.target.value);
+    },
+    setIngredient(ingredientName, value) {
+      let newIngredient = { ingredientName: value };
+      return this.ingredientToOrder.push(newIngredient);
     },
   },
 };

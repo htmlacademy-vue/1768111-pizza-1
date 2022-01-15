@@ -30,11 +30,11 @@ export default {
     },
   },
   methods: {
-    increase(evt) {
-      return this.$emit("setValue", +evt.target.value + 1);
+    increase() {
+      this.$emit("setValue", this.value + 1);
     },
-    decrease(evt) {
-      return this.$emit("setValue", +evt.target.value - 1);
+    decrease() {
+      this.$emit("setValue", this.value - 1);
     },
   },
 };
