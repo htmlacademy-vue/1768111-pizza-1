@@ -1,6 +1,6 @@
 <template>
   <div class="content__result">
-    <p>Итого: 0 ₽</p>
+    <p>Итого: {{ orderPrice }} ₽</p>
     <button type="button" class="button" disabled>Готовьте!</button>
   </div>
 </template>
@@ -11,6 +11,10 @@ export default {
   props: {
     order: {
       type: Object,
+      required: true,
+    },
+    orderPrice: {
+      type: Number,
       required: true,
     },
   },

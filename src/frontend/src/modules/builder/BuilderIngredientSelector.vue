@@ -5,7 +5,8 @@
     }}</span>
     <ItemCounter
       class="ingredients__counter counter--orange"
-      @setAmount="setAmount"
+      @setValue="setValue"
+      :value="value"
     />
   </li>
 </template>
@@ -29,8 +30,8 @@ export default {
     },
   },
   methods: {
-    setAmount(value) {
-      return (this.value = value);
+    setValue(value) {
+      this.value = value;
     },
   },
 };

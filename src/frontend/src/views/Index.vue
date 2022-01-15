@@ -20,7 +20,7 @@
           <div class="content__pizza">
             <BuilderPizzaView />
 
-            <BuilderPriceCounter :order="order" />
+            <BuilderPriceCounter :order="order" :orderPrice="orderPrice" />
           </div>
         </div>
       </form>
@@ -56,15 +56,12 @@ export default {
       order: {
         dough: {
           name: "light",
-          price: 0,
         },
         size: {
           name: "normal",
-          price: 0,
         },
         sauce: {
           name: "tomato",
-          price: 0,
         },
       },
     };
@@ -80,12 +77,24 @@ export default {
       this.order.sauce.name = sauce;
     },
   },
-  watch: {
-    getPrices() {
-      if (this.order.dough.name === "light") {
-        this.order.dough.price = 300;
-      }
-      return this.order.dough.price;
+  computed: {
+    doughPrice() {
+      return this.pizzas.dough.find(
+        (item) => item.class === this.order.dough.name
+      ).price;
+    },
+    sizeMultiplier() {
+      return this.pizzas.sizes.find(
+        (item) => item.class === this.order.size.name
+      ).multiplier;
+    },
+    saucePrice() {
+      return this.pizzas.sauces.find(
+        (item) => item.class === this.order.sauce.name
+      ).price;
+    },
+    orderPrice() {
+      return this.sizeMultiplier * (this.doughPrice + this.saucePrice);
     },
   },
 };
