@@ -29,7 +29,7 @@
               v-for="ingredient in ingredients"
               :key="ingredient.id"
               :ingredient="ingredient"
-              :setIngredient="setIngredient"
+              @setIngredient="setIngredient"
             />
           </ul>
         </div>
@@ -66,7 +66,8 @@ export default {
     },
     setIngredient(ingredientName, value) {
       let newIngredient = { ingredientName: value };
-      return this.ingredientToOrder.push(newIngredient);
+      Object.assign(this.ingredientToOrder, newIngredient);
+      return this.ingredientToOrder;
     },
   },
 };

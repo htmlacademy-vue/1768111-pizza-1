@@ -6,7 +6,7 @@
     <ItemCounter
       class="ingredients__counter counter--orange"
       @setValue="setValue"
-      @click="setIngredient()"
+      @click="setIngredient"
       :value="value"
     />
   </li>
@@ -34,8 +34,8 @@ export default {
     setValue(value) {
       this.value = value;
     },
-    setIngredient(ingredientName, value) {
-      return this.$emit("setIngredient", ingredientName, value);
+    setIngredient() {
+      return this.$emit("setIngredient", this.ingredientName, this.value);
     },
   },
 };
