@@ -4,8 +4,8 @@
     <button
       type="button"
       class="button"
-      :disabled="this.order.name && !Object.keys(this.order.ingredients).length"
-      @click="order.price = orderPrice"
+      :disabled="toggleDisabled"
+      @click="setOrderPrice"
     >
       Готовьте!
     </button>
@@ -25,7 +25,15 @@ export default {
       required: true,
     },
   },
+  methods: {
+    setOrderPrice() {
+      this.order.price = this.orderPrice;
+    },
+  },
+  computed: {
+    toggleDisabled() {
+      return this.order.name && !Object.keys(this.order.ingredients).length;
+    },
+  },
 };
 </script>
-
-<style lang="scss"></style>

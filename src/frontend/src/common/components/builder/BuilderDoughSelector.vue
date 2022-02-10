@@ -13,7 +13,7 @@
             name="dought"
             :value="dough.class"
             class="visually-hidden"
-            :checked="dough.class === orderDough.name ? true : false"
+            :checked="dough.class === orderDough.name"
             @change="setDough"
           />
           <b>{{ dough.name }}</b>
@@ -50,5 +50,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss"></style>

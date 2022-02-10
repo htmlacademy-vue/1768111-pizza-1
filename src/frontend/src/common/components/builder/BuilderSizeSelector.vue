@@ -13,7 +13,7 @@
             name="diameter"
             :value="size.class"
             class="visually-hidden"
-            :checked="size.class === orderSize.name ? true : false"
+            :checked="size.class === orderSize.name"
             @change="setSize"
           />
           <span>{{ size.name }}</span>
@@ -49,5 +49,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss"></style>

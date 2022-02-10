@@ -14,7 +14,7 @@
             <RadioButton
               name="sauce"
               :value="sauce.class"
-              :checked="sauce.class === orderSauce.name ? true : false"
+              :checked="sauce.class === orderSauce.name"
               @change="setSauce"
             />
             <span>{{ sauce.name }}</span>
@@ -80,5 +80,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss"></style>

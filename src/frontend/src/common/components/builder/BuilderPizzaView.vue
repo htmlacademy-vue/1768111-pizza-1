@@ -55,29 +55,22 @@ export default {
   computed: {
     getFoundationClass() {
       let foundationClass = "";
-      if (this.order.sauce.name === "tomato") {
-        switch (this.order.dough.name) {
-          case "large":
-            foundationClass = "pizza--foundation--big-tomato";
-            break;
-          case "light":
-            foundationClass = "pizza--foundation--small-tomato";
-            break;
-        }
-      } else if (this.order.sauce.name === "creamy") {
-        switch (this.order.dough.name) {
-          case "large":
-            foundationClass = "pizza--foundation--big-creamy";
-            break;
-          case "light":
-            foundationClass = "pizza--foundation--small-creamy";
-            break;
-        }
+      switch (this.order.sauce.name) {
+        case "tomato":
+          foundationClass =
+            this.order.dough.name === "large"
+              ? "pizza--foundation--big-tomato"
+              : "pizza--foundation--small-tomato";
+          break;
+        case "creamy":
+          foundationClass =
+            this.order.dough.name === "large"
+              ? "pizza--foundation--big-creamy"
+              : "pizza--foundation--small-creamy";
+          break;
       }
       return foundationClass;
     },
   },
 };
 </script>
-
-<style lang="scss"></style>
