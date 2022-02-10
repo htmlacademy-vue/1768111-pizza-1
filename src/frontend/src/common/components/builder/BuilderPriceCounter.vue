@@ -4,7 +4,7 @@
     <button
       type="button"
       class="button"
-      :disabled="toggleDisabled"
+      :disabled="isButtonDisabled"
       @click="setOrderPrice"
     >
       Готовьте!
@@ -31,7 +31,7 @@ export default {
     },
   },
   computed: {
-    toggleDisabled() {
+    isButtonDisabled() {
       return this.order.name && !Object.keys(this.order.ingredients).length;
     },
   },
