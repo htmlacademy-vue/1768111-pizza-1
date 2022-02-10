@@ -1,27 +1,29 @@
 <template>
   <li class="ingredients__item">
-    <span :class="'filling filling--' + ingredient.class">{{
-      ingredient.name
-    }}</span>
+    <AppDrag :transferData="{ [this.ingredientName]: this.value }">
+      <span :class="'filling filling--' + ingredient.class">{{
+        ingredient.name
+      }}</span>
+    </AppDrag>
     <ItemCounter
       class="ingredients__counter counter--orange"
-      @setValue="setValue"
-      @click="setIngredient"
       :value="value"
+      @setIngredients="setIngredients"
     />
   </li>
 </template>
 
 <script>
 import ItemCounter from "@/common/components/ItemCounter.vue";
+import AppDrag from "@/common/components/AppDrag.vue";
 
 export default {
   name: "BuilderIngredientSelector",
-  components: { ItemCounter },
+  components: { ItemCounter, AppDrag },
   data() {
     return {
-      value: 0,
       ingredientName: this.ingredient.class,
+      value: 0,
     };
   },
   props: {
@@ -29,13 +31,23 @@ export default {
       type: Object,
       required: true,
     },
+    orderIngredients: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
-    setValue(value) {
+    setIngredients(value) {
       this.value = value;
+      this.$emit("setIngredients", this.ingredientName, value);
     },
-    setIngredient() {
-      return this.$emit("setIngredient", this.ingredientName, this.value);
+  },
+  watch: {
+    orderIngredients: function (value) {
+      if (Object.keys(this.orderIngredients).includes(this.ingredientName)) {
+        if (value[this.ingredientName] <= 3)
+          this.value = value[this.ingredientName];
+      }
     },
   },
 };

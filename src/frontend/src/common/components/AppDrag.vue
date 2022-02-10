@@ -10,15 +10,15 @@
 </template>
 
 <script>
-import { DATA_TRANSFER_PAYLOAD, MOVE } from '@/common/constants.js';
+import { DATA_TRANSFER_PAYLOAD, MOVE } from "@/common/constants.js";
 
 export default {
-  name: 'AppDrag',
+  name: "AppDrag",
   props: {
     transferData: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     onDrag({ dataTransfer }) {
@@ -28,7 +28,7 @@ export default {
         DATA_TRANSFER_PAYLOAD,
         JSON.stringify(this.transferData)
       );
-    }
-  }
+    },
+  },
 };
 </script>

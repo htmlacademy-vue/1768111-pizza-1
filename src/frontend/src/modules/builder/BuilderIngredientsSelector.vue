@@ -27,9 +27,10 @@
           <ul class="ingredients__list">
             <BuilderIngredientSelector
               v-for="ingredient in ingredients"
-              :key="ingredient.id"
+              :key="ingredient.class"
               :ingredient="ingredient"
-              @setIngredient="setIngredient"
+              :orderIngredients="orderIngredients"
+              @setIngredients="setIngredients"
             />
           </ul>
         </div>
@@ -47,12 +48,16 @@ export default {
   components: { RadioButton, BuilderIngredientSelector },
   data() {
     return {
-      ingredientToOrder: {},
+      ingredientsToOrder: {},
     };
   },
   props: {
     ingredients: {
       type: Array,
+      required: true,
+    },
+    orderIngredients: {
+      type: Object,
       required: true,
     },
     sauces: {
@@ -64,10 +69,9 @@ export default {
     setSauce(evt) {
       this.$emit("setSauce", evt.target.value);
     },
-    setIngredient(ingredientName, value) {
-      let newIngredient = { ingredientName: value };
-      Object.assign(this.ingredientToOrder, newIngredient);
-      return this.ingredientToOrder;
+    setIngredients(ingredientName, value) {
+      this.$set(this.ingredientsToOrder, ingredientName, value);
+      this.$emit("setIngredients", ingredientName, value);
     },
   },
 };

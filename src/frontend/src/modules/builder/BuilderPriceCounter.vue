@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "BuilderPizzaView",
+  name: "BuilderPizzaCounter",
   props: {
     order: {
       type: Object,

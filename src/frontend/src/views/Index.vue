@@ -13,13 +13,16 @@
 
           <BuilderIngredientsSelector
             :ingredients="pizzas.ingredients"
+            :orderIngredients="order.ingredients"
             :sauces="pizzas.sauces"
             @setSauce="setSauce"
+            @setIngredients="setIngredients"
           />
 
           <div class="content__pizza">
-            <BuilderPizzaView />
-
+            <AppDrop @drop="transferIngredient">
+              <BuilderPizzaView :order="order" />
+            </AppDrop>
             <BuilderPriceCounter :order="order" :orderPrice="orderPrice" />
           </div>
         </div>
@@ -39,6 +42,7 @@ import BuilderIngredientsSelector from "@/modules/builder/BuilderIngredientsSele
 import BuilderPizzaView from "@/modules/builder/BuilderPizzaView.vue";
 import BuilderPriceCounter from "@/modules/builder/BuilderPriceCounter.vue";
 import AppLayout from "@/layouts/AppLayout.vue";
+import AppDrop from "@/common/components/AppDrop.vue";
 
 export default {
   name: "Index",
@@ -49,6 +53,7 @@ export default {
     BuilderPizzaView,
     BuilderPriceCounter,
     AppLayout,
+    AppDrop,
   },
   data() {
     return {
@@ -63,6 +68,7 @@ export default {
         sauce: {
           name: "tomato",
         },
+        ingredients: {},
       },
     };
   },
@@ -75,6 +81,25 @@ export default {
     },
     setSauce(sauce) {
       this.order.sauce.name = sauce;
+    },
+    setIngredients(ingredientName, value) {
+      this.$set(this.order.ingredients, ingredientName, value);
+      this.cleanEmptyIngredients();
+    },
+    cleanEmptyIngredients() {
+      for (let propName in this.order.ingredients) {
+        if (this.order.ingredients[propName] === 0) {
+          delete this.order.ingredients[propName];
+        }
+      }
+      return this.order.ingredients;
+    },
+    transferIngredient(ingredient) {
+      this.order.ingredients = { ...this.order.ingredients, ...ingredient };
+      if (this.order.ingredients[Object.keys(ingredient)[0]] < 3) {
+        this.order.ingredients[Object.keys(ingredient)[0]] += 1;
+      }
+      return this.order.ingredients;
     },
   },
   computed: {
@@ -93,8 +118,23 @@ export default {
         (item) => item.class === this.order.sauce.name
       ).price;
     },
+    ingredientsPrice() {
+      let result = 0;
+      let keys = Object.keys(this.order.ingredients);
+
+      for (let i = 0; i < keys.length; i++) {
+        result +=
+          this.pizzas.ingredients.find((item) => item.class == keys[i]).price *
+          this.order.ingredients[keys[i]];
+      }
+
+      return result;
+    },
     orderPrice() {
-      return this.sizeMultiplier * (this.doughPrice + this.saucePrice);
+      return (
+        this.sizeMultiplier *
+        (this.doughPrice + this.saucePrice + this.ingredientsPrice)
+      );
     },
   },
 };

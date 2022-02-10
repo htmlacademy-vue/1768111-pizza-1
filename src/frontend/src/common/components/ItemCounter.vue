@@ -28,13 +28,16 @@ export default {
       type: Number,
       required: true,
     },
+    setIngredient: {
+      type: Function,
+    },
   },
   methods: {
     increase() {
-      this.$emit("setValue", this.value + 1);
+      this.$emit("setIngredients", this.value + 1);
     },
     decrease() {
-      this.$emit("setValue", this.value - 1);
+      this.$emit("setIngredients", this.value - 1);
     },
   },
 };

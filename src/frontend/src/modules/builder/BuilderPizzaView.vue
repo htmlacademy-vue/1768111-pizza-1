@@ -11,11 +11,18 @@
     </label>
 
     <div class="content__constructor">
-      <div class="pizza pizza--foundation--big-tomato">
+      <div class="pizza" :class="setFoundationClass">
         <div class="pizza__wrapper">
-          <div class="pizza__filling pizza__filling--ananas"></div>
-          <div class="pizza__filling pizza__filling--bacon"></div>
-          <div class="pizza__filling pizza__filling--cheddar"></div>
+          <div
+            v-for="(ingredient, name) in this.order.ingredients"
+            :key="name + ingredient"
+            class="pizza__filling"
+            :class="[
+              'pizza__filling--' + name,
+              ingredient == 2 ? 'pizza__filling--second' : '',
+              ingredient == 3 ? 'pizza__filling--third' : '',
+            ]"
+          ></div>
         </div>
       </div>
     </div>
@@ -25,8 +32,50 @@
 <script>
 export default {
   name: "BuilderPizzaView",
-  data() {
-    return {};
+  props: {
+    order: {
+      type: Object,
+      required: true,
+    },
+    data() {
+      return {};
+    },
+  },
+  computed: {
+    setFoundationClass() {
+      let foundationClass = "";
+      if (
+        this.order.sauce.name === "tomato" &&
+        this.order.dough.name === "large"
+      ) {
+        foundationClass = "pizza--foundation--big-tomato";
+      } else if (
+        this.order.sauce.name === "tomato" &&
+        this.order.dough.name === "light"
+      ) {
+        foundationClass = "pizza--foundation--small-tomato";
+      } else if (
+        this.order.sauce.name === "creamy" &&
+        this.order.dough.name === "light"
+      ) {
+        foundationClass = "pizza--foundation--small-creamy";
+      } else if (
+        this.order.sauce.name === "creamy" &&
+        this.order.dough.name === "large"
+      ) {
+        foundationClass = "pizza--foundation--big-creamy";
+      }
+      return foundationClass;
+    },
+  },
+  cleanEmptyIngredients() {
+    for (let propName in this.order.ingredients) {
+      if (this.order.ingredients[propName] === 0) {
+        delete this.order.ingredients[propName];
+      }
+    }
+    this.$forceUpdate();
+    return this.order.ingredients;
   },
 };
 </script>
