@@ -1,27 +1,36 @@
 <template>
   <div>
-    <AppLayout :orderPrice="orderPrice" />
+    <AppLayout :orderPrice="order.price" />
 
     <main class="content">
       <form action="#" method="post">
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
 
-          <BuilderDoughSelector :doughs="pizzas.dough" @setDough="setDough" />
+          <BuilderDoughSelector
+            :doughs="pizzas.dough"
+            @setDough="setDough"
+            :orderDough="order.dough"
+          />
 
-          <BuilderSizeSelector :sizes="pizzas.sizes" @setSize="setSize" />
+          <BuilderSizeSelector
+            :sizes="pizzas.sizes"
+            @setSize="setSize"
+            :orderSize="order.size"
+          />
 
           <BuilderIngredientsSelector
             :ingredients="pizzas.ingredients"
-            :orderIngredients="order.ingredients"
             :sauces="pizzas.sauces"
+            :orderIngredients="order.ingredients"
+            :orderSauce="order.sauce"
             @setSauce="setSauce"
             @setIngredients="setIngredients"
           />
 
           <div class="content__pizza">
             <AppDrop @drop="transferIngredient">
-              <BuilderPizzaView :order="order" />
+              <BuilderPizzaView :order="order" @setName="setName" />
             </AppDrop>
             <BuilderPriceCounter :order="order" :orderPrice="orderPrice" />
           </div>
@@ -36,11 +45,11 @@ import "@/static/misc.json";
 import pizzas from "@/static/pizza.json";
 import "@/static/user.json";
 import { normalizePizzas } from "@/common/helpers.js";
-import BuilderDoughSelector from "@/modules/builder/BuilderDoughSelector.vue";
-import BuilderSizeSelector from "@/modules/builder/BuilderSizeSelector.vue";
-import BuilderIngredientsSelector from "@/modules/builder/BuilderIngredientsSelector.vue";
-import BuilderPizzaView from "@/modules/builder/BuilderPizzaView.vue";
-import BuilderPriceCounter from "@/modules/builder/BuilderPriceCounter.vue";
+import BuilderDoughSelector from "@/common/components/builder/BuilderDoughSelector.vue";
+import BuilderSizeSelector from "@/common/components/builder/BuilderSizeSelector.vue";
+import BuilderIngredientsSelector from "@/common/components/builder/BuilderIngredientsSelector.vue";
+import BuilderPizzaView from "@/common/components/builder/BuilderPizzaView.vue";
+import BuilderPriceCounter from "@/common/components/builder/BuilderPriceCounter.vue";
 import AppLayout from "@/layouts/AppLayout.vue";
 import AppDrop from "@/common/components/AppDrop.vue";
 
@@ -69,10 +78,15 @@ export default {
           name: "tomato",
         },
         ingredients: {},
+        name: "",
+        price: 0,
       },
     };
   },
   methods: {
+    setName(name) {
+      this.order.name = name;
+    },
     setDough(dough) {
       this.order.dough.name = dough;
     },
@@ -82,8 +96,8 @@ export default {
     setSauce(sauce) {
       this.order.sauce.name = sauce;
     },
-    setIngredients(ingredientName, value) {
-      this.$set(this.order.ingredients, ingredientName, value);
+    setIngredients(ingredientName, ingredientCounter) {
+      this.$set(this.order.ingredients, ingredientName, ingredientCounter);
       this.cleanEmptyIngredients();
     },
     cleanEmptyIngredients() {
@@ -124,7 +138,7 @@ export default {
 
       for (let i = 0; i < keys.length; i++) {
         result +=
-          this.pizzas.ingredients.find((item) => item.class == keys[i]).price *
+          this.pizzas.ingredients.find((item) => item.class === keys[i]).price *
           this.order.ingredients[keys[i]];
       }
 

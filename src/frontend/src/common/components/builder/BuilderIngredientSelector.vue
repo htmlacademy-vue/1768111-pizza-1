@@ -1,13 +1,13 @@
 <template>
   <li class="ingredients__item">
-    <AppDrag :transferData="{ [this.ingredientName]: this.value }">
+    <AppDrag :transferData="{ [this.ingredientName]: this.ingredientCounter }">
       <span :class="'filling filling--' + ingredient.class">{{
         ingredient.name
       }}</span>
     </AppDrag>
     <ItemCounter
       class="ingredients__counter counter--orange"
-      :value="value"
+      :value="ingredientCounter"
       @setIngredients="setIngredients"
     />
   </li>
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       ingredientName: this.ingredient.class,
-      value: 0,
+      ingredientCounter: 0,
     };
   },
   props: {
@@ -38,15 +38,15 @@ export default {
   },
   methods: {
     setIngredients(value) {
-      this.value = value;
-      this.$emit("setIngredients", this.ingredientName, value);
+      this.ingredientCounter = value;
+      this.$emit("setIngredients", this.ingredientName, this.ingredientCounter);
     },
   },
   watch: {
     orderIngredients: function (value) {
       if (Object.keys(this.orderIngredients).includes(this.ingredientName)) {
         if (value[this.ingredientName] <= 3)
-          this.value = value[this.ingredientName];
+          this.ingredientCounter = value[this.ingredientName];
       }
     },
   },

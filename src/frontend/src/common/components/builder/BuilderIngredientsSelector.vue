@@ -7,14 +7,14 @@
         <div class="ingredients__sauce">
           <p>Основной соус:</p>
           <label
-            v-for="(sauce, index) in sauces"
+            v-for="sauce in sauces"
             :key="sauce.id"
             class="radio ingredients__input"
           >
             <RadioButton
               name="sauce"
               :value="sauce.class"
-              :checked="index === 0 ? true : false"
+              :checked="sauce.class === orderSauce.name ? true : false"
               @change="setSauce"
             />
             <span>{{ sauce.name }}</span>
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import BuilderIngredientSelector from "@/modules/builder/BuilderIngredientSelector.vue";
+import BuilderIngredientSelector from "@/common/components/builder/BuilderIngredientSelector.vue";
 import RadioButton from "@/common/components/RadioButton.vue";
 
 export default {
@@ -60,6 +60,10 @@ export default {
       type: Object,
       required: true,
     },
+    orderSauce: {
+      type: Object,
+      required: true,
+    },
     sauces: {
       type: Array,
       required: true,
@@ -69,9 +73,9 @@ export default {
     setSauce(evt) {
       this.$emit("setSauce", evt.target.value);
     },
-    setIngredients(ingredientName, value) {
-      this.$set(this.ingredientsToOrder, ingredientName, value);
-      this.$emit("setIngredients", ingredientName, value);
+    setIngredients(ingredientName, ingredientCounter) {
+      this.$set(this.ingredientsToOrder, ingredientName, ingredientCounter);
+      this.$emit("setIngredients", ingredientName, ingredientCounter);
     },
   },
 };

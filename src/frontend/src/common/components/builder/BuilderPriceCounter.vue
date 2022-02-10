@@ -1,7 +1,14 @@
 <template>
   <div class="content__result">
     <p>Итого: {{ orderPrice }} ₽</p>
-    <button type="button" class="button" disabled>Готовьте!</button>
+    <button
+      type="button"
+      class="button"
+      :disabled="this.order.name && !Object.keys(this.order.ingredients).length"
+      @click="order.price = orderPrice"
+    >
+      Готовьте!
+    </button>
   </div>
 </template>
 

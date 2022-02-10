@@ -1,12 +1,15 @@
 <template>
-  <input type="radio" v-on="$listeners" />
+  <input type="radio" v-on="$listeners" :checked="checked" />
 </template>
 
 <script>
 export default {
   name: "RadioButton",
-  data() {
-    return {};
+  props: {
+    checked: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>

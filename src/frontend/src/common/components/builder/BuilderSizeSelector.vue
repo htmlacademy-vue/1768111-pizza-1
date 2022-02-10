@@ -5,7 +5,7 @@
 
       <div class="sheet__content diameter">
         <label
-          v-for="(size, index) in sizes"
+          v-for="size in sizes"
           :key="size.id"
           :class="'diameter__input diameter__input--' + size.class"
         >
@@ -13,7 +13,7 @@
             name="diameter"
             :value="size.class"
             class="visually-hidden"
-            :checked="index === 1 ? true : false"
+            :checked="size.class === orderSize.name ? true : false"
             @change="setSize"
           />
           <span>{{ size.name }}</span>
@@ -35,6 +35,10 @@ export default {
   props: {
     sizes: {
       type: Array,
+      required: true,
+    },
+    orderSize: {
+      type: Object,
       required: true,
     },
   },

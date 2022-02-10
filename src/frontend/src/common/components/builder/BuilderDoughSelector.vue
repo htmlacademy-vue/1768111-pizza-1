@@ -5,7 +5,7 @@
 
       <div class="sheet__content dough">
         <label
-          v-for="(dough, index) in doughs"
+          v-for="dough in doughs"
           :key="dough.id"
           :class="'dough__input dough__input--' + dough.class"
         >
@@ -13,7 +13,7 @@
             name="dought"
             :value="dough.class"
             class="visually-hidden"
-            :checked="index === 0 ? true : false"
+            :checked="dough.class === orderDough.name ? true : false"
             @change="setDough"
           />
           <b>{{ dough.name }}</b>
@@ -36,6 +36,10 @@ export default {
   props: {
     doughs: {
       type: Array,
+      required: true,
+    },
+    orderDough: {
+      type: Object,
       required: true,
     },
   },
