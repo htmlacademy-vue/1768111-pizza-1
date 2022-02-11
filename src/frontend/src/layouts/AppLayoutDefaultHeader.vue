@@ -40,7 +40,9 @@
       >
         <span>Войти</span></router-link
       >
-      <a v-else href="#" class="header__logout"><span>Выйти</span></a>
+      <router-link v-else class="header__logout" :to="{ name: 'Index' }"
+        ><span>Выйти</span></router-link
+      >
     </div>
   </header>
 </template>
