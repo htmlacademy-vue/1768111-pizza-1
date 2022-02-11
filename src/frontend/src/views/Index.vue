@@ -1,7 +1,5 @@
 <template>
   <div>
-    <AppLayout :orderPrice="order.price" />
-
     <main class="content">
       <form action="#" method="post">
         <div class="content__wrapper">
@@ -50,7 +48,6 @@ import BuilderSizeSelector from "@/common/components/builder/BuilderSizeSelector
 import BuilderIngredientsSelector from "@/common/components/builder/BuilderIngredientsSelector.vue";
 import BuilderPizzaView from "@/common/components/builder/BuilderPizzaView.vue";
 import BuilderPriceCounter from "@/common/components/builder/BuilderPriceCounter.vue";
-import AppLayout from "@/layouts/AppLayout.vue";
 import AppDrop from "@/common/components/AppDrop.vue";
 
 export default {
@@ -61,7 +58,6 @@ export default {
     BuilderIngredientsSelector,
     BuilderPizzaView,
     BuilderPriceCounter,
-    AppLayout,
     AppDrop,
   },
   data() {
