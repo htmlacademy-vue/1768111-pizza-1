@@ -5,7 +5,7 @@
 
       <div class="sheet__content diameter">
         <label
-          v-for="size in sizes"
+          v-for="size in pizzas.sizes"
           :key="size.id"
           :class="'diameter__input diameter__input--' + size.class"
         >
@@ -13,8 +13,8 @@
             name="diameter"
             :value="size.class"
             class="visually-hidden"
-            :checked="size.class === orderSize.name"
-            @change="setSize"
+            :checked="size.class === order.size.name"
+            @click="change($event.target.value)"
           />
           <span>{{ size.name }}</span>
         </label>
@@ -25,6 +25,7 @@
 
 <script>
 import RadioButton from "@/common/components/RadioButton.vue";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "BuilderSizeSelector",
@@ -32,19 +33,13 @@ export default {
   data() {
     return {};
   },
-  props: {
-    sizes: {
-      type: Array,
-      required: true,
-    },
-    orderSize: {
-      type: Object,
-      required: true,
-    },
+  computed: {
+    ...mapState("builder", ["pizzas", "order"]),
   },
   methods: {
-    setSize(evt) {
-      this.$emit("setSize", evt.target.value);
+    ...mapActions("builder", ["updateSizes"]),
+    async change(size) {
+      await this.updateSizes(size);
     },
   },
 };

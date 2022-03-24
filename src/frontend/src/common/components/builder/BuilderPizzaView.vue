@@ -8,8 +8,7 @@
         id="pizza"
         placeholder="Введите
       название пиццы"
-        v-model="pizzaName"
-        @input="setName"
+        @change="change($event.target.value)"
         required
       />
     </label>
@@ -34,25 +33,15 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "BuilderPizzaView",
   data() {
-    return {
-      pizzaName: "",
-    };
-  },
-  props: {
-    order: {
-      type: Object,
-      required: true,
-    },
-  },
-  methods: {
-    setName() {
-      this.$emit("setName", this.pizzaName);
-    },
+    return {};
   },
   computed: {
+    ...mapState("builder", ["pizzas", "order"]),
     getFoundationClass() {
       let foundationClass = "";
       switch (this.order.sauce.name) {
@@ -70,6 +59,12 @@ export default {
           break;
       }
       return foundationClass;
+    },
+  },
+  methods: {
+    ...mapActions("builder", ["updateName"]),
+    async change(name) {
+      await this.updateName(name);
     },
   },
 };

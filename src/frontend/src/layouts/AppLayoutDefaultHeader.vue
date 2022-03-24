@@ -11,7 +11,7 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link :to="{ name: 'Cart' }">0 ₽</router-link>
+      <router-link :to="{ name: 'Cart' }">{{ orderPrice }} ₽</router-link>
     </div>
     <div class="header__user">
       <router-link v-if="isAuthorized" :to="{ name: 'Profile' }">
@@ -48,9 +48,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "AppLayoutDefaultHeader",
   computed: {
+    ...mapGetters("builder", ["orderPrice"]),
     isAuthorized() {
       return ["Cart", "Orders", "Profile"].includes(this.$route.name);
     },

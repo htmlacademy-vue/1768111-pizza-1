@@ -26,16 +26,7 @@ export default {
       ingredientCounter: 0,
     };
   },
-  props: {
-    ingredient: {
-      type: Object,
-      required: true,
-    },
-    orderIngredients: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: ["ingredient", "orderIngredients"],
   methods: {
     setIngredients(value) {
       this.ingredientCounter = value;
