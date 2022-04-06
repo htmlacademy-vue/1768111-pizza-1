@@ -8,7 +8,9 @@
         id="pizza"
         placeholder="Введите
       название пиццы"
-        @change="change($event.target.value)"
+        v-model.trim="order.name"
+        maxlength="30"
+        @input="changeName($event.target.value)"
         required
       />
     </label>
@@ -21,7 +23,7 @@
             :key="name + ingredient"
             class="pizza__filling"
             :class="[
-              'pizza__filling--' + name,
+              ingredient >= 1 ? 'pizza__filling--' + name : '',
               ingredient == 2 ? 'pizza__filling--second' : '',
               ingredient == 3 ? 'pizza__filling--third' : '',
             ]"
@@ -63,7 +65,7 @@ export default {
   },
   methods: {
     ...mapActions("builder", ["updateName"]),
-    async change(name) {
+    async changeName(name) {
       await this.updateName(name);
     },
   },

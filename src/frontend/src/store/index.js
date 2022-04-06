@@ -2,13 +2,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import modules from "@/store/modules";
-import {
-  UPDATE_NAME,
-  UPDATE_DOUGHS,
-  UPDATE_SIZES,
-  UPDATE_SAUCES,
-  UPDATE_INGREDIENTS,
-} from "@/store/mutations-types.js";
+import "@/store/mutations-types.js";
 
 Vue.use(Vuex);
 

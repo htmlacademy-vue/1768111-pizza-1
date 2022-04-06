@@ -30,7 +30,6 @@
               :key="ingredient.class"
               :ingredient="ingredient"
               :orderIngredients="order.ingredients"
-              @setIngredients="setIngredients"
             />
           </ul>
         </div>
@@ -47,26 +46,13 @@ import { mapState, mapActions } from "vuex";
 export default {
   name: "BuilderIngredientsSelector",
   components: { RadioButton, BuilderIngredientSelector },
-  data() {
-    return {
-      ingredientsToOrder: {},
-    };
-  },
   computed: {
     ...mapState("builder", ["pizzas", "order"]),
   },
   methods: {
-    ...mapActions("builder", ["updateSauces", "updateIngredients"]),
+    ...mapActions("builder", ["updateSauces"]),
     async changeSauce(sauce) {
       await this.updateSauces(sauce);
-    },
-    async changeIngredients(ingredients) {
-      await this.updateIngredients(ingredients);
-    },
-    setIngredients(ingredientName, ingredientCounter) {
-      this.$set(this.ingredientsToOrder, ingredientName, ingredientCounter);
-      this.$emit("setIngredients", ingredientName, ingredientCounter);
-      this.changeIngredients(this.ingredientsToOrder);
     },
   },
 };

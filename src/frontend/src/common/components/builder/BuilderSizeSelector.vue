@@ -14,7 +14,7 @@
             :value="size.class"
             class="visually-hidden"
             :checked="size.class === order.size.name"
-            @click="change($event.target.value)"
+            @click="changeSize($event.target.value)"
           />
           <span>{{ size.name }}</span>
         </label>
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     ...mapActions("builder", ["updateSizes"]),
-    async change(size) {
+    async changeSize(size) {
       await this.updateSizes(size);
     },
   },

@@ -11,10 +11,10 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link :to="{ name: 'Cart' }">{{ orderPrice }} ₽</router-link>
+      <router-link :to="{ name: 'Cart' }">{{ totalPrice }} ₽</router-link>
     </div>
     <div class="header__user">
-      <router-link v-if="isAuthorized" :to="{ name: 'Profile' }">
+      <router-link v-if="isAuth" :to="{ name: 'Profile' }">
         <picture>
           <source
             type="image/webp"
@@ -33,11 +33,7 @@
         </picture>
         <span>Василий Ложкин</span>
       </router-link>
-      <router-link
-        v-if="!isAuthorized"
-        class="header__login"
-        :to="{ name: 'Login' }"
-      >
+      <router-link v-if="!isAuth" class="header__login" :to="{ name: 'Login' }">
         <span>Войти</span></router-link
       >
       <router-link v-else class="header__logout" :to="{ name: 'Index' }"
@@ -53,10 +49,8 @@ import { mapGetters } from "vuex";
 export default {
   name: "AppLayoutDefaultHeader",
   computed: {
-    ...mapGetters("builder", ["orderPrice"]),
-    isAuthorized() {
-      return ["Cart", "Orders", "Profile"].includes(this.$route.name);
-    },
+    ...mapGetters("cart", ["totalPrice"]),
+    ...mapGetters("auth", ["isAuth"]),
   },
 };
 </script>

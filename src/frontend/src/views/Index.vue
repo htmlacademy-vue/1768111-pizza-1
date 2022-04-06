@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import "@/static/misc.json";
-import "@/static/user.json";
 import { mapActions } from "vuex";
 
 import BuilderDoughSelector from "@/common/components/builder/BuilderDoughSelector.vue";

@@ -14,7 +14,7 @@
             :value="dough.class"
             class="visually-hidden"
             :checked="dough.class === order.dough.name"
-            @click="change($event.target.value)"
+            @click="changeDough($event.target.value)"
           />
           <b>{{ dough.name }}</b>
           <span>{{ dough.description }}</span>
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     ...mapActions("builder", ["updateDoughs"]),
-    async change(dough) {
+    async changeDough(dough) {
       await this.updateDoughs(dough);
     },
   },

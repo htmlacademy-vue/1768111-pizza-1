@@ -1,4 +1,4 @@
-import { normalizePizzas } from "@/common/helpers.js";
+import { normalizePizzas, getIngredientsList } from "@/common/helpers.js";
 import pizzas from "@/static/pizza.json";
 import {
   UPDATE_DOUGHS,
@@ -6,6 +6,10 @@ import {
   UPDATE_SAUCES,
   UPDATE_NAME,
   UPDATE_INGREDIENTS,
+  UPDATE_TRANSFER_INGREDIENTS,
+  CLEAR_ORDER,
+  CHANGE_ORDER,
+  UPDATE_PRICE,
 } from "@/store/mutations-types.js";
 
 export default {
@@ -22,7 +26,7 @@ export default {
       sauce: {
         name: "tomato",
       },
-      ingredients: {},
+      ingredients: getIngredientsList(pizzas.ingredients),
       name: "",
       price: 700,
     },
@@ -50,7 +54,7 @@ export default {
       for (let i = 0; i < keys.length; i++) {
         result +=
           state.pizzas.ingredients.find((item) => item.class === keys[i])
-            .price * state.order.ingredients[keys[i]];
+            .price * state.order.ingredients[keys[i]] || 0;
       }
 
       return result;
@@ -63,8 +67,30 @@ export default {
     },
   },
   mutations: {
+    [CLEAR_ORDER](state) {
+      state.order = {
+        dough: {
+          name: "light",
+        },
+        size: {
+          name: "normal",
+        },
+        sauce: {
+          name: "tomato",
+        },
+        ingredients: getIngredientsList(pizzas.ingredients),
+        name: "",
+        price: 700,
+      };
+    },
+    [CHANGE_ORDER](state, order) {
+      state.order = order;
+    },
     [UPDATE_NAME](state, name) {
       state.order.name = name;
+    },
+    [UPDATE_PRICE](state, price) {
+      state.order.price = price;
     },
     [UPDATE_DOUGHS](state, dough) {
       state.order.dough.name = dough;
@@ -75,13 +101,25 @@ export default {
     [UPDATE_SAUCES](state, sauce) {
       state.order.sauce.name = sauce;
     },
-    [UPDATE_INGREDIENTS](state, ingredients) {
-      state.order.ingredients = { ...state.order.ingredients, ...ingredients };
+    [UPDATE_INGREDIENTS](state, { ingredient, value }) {
+      state.order.ingredients[ingredient] = value;
+    },
+    [UPDATE_TRANSFER_INGREDIENTS](state, { ingredient, value }) {
+      state.order.ingredients[ingredient] += value;
     },
   },
   actions: {
+    clearOrder({ commit }) {
+      commit(CLEAR_ORDER);
+    },
+    changeOrder({ commit }, order) {
+      commit(CHANGE_ORDER, order);
+    },
     updateName({ commit }, name) {
       commit(UPDATE_NAME, name);
+    },
+    updatePrice({ commit }, price) {
+      commit(UPDATE_PRICE, price);
     },
     updateDoughs({ commit }, dough) {
       commit(UPDATE_DOUGHS, dough);
@@ -92,20 +130,14 @@ export default {
     updateSauces({ commit }, sauce) {
       commit(UPDATE_SAUCES, sauce);
     },
-    updateIngredients({ commit, state }, ingredients) {
-      commit(UPDATE_INGREDIENTS, ingredients);
-      for (let propName in state.order.ingredients) {
-        if (state.order.ingredients[propName] === 0) {
-          delete state.order.ingredients[propName];
-        }
-      }
+    updateIngredients({ commit }, { ingredient, value }) {
+      commit(UPDATE_INGREDIENTS, { ingredient, value });
     },
-    transferIngredient({ commit, state }, ingredient) {
-      let ingredients = { ...state.order.ingredients, ...ingredient };
-      if (ingredients[Object.keys(ingredient)[0]] < 3) {
-        ingredients[Object.keys(ingredient)[0]] += 1;
+    transferIngredient({ commit, state }, { ingredient, value }) {
+      if (state.order.ingredients[ingredient] < 3) {
+        value = 1;
+        commit(UPDATE_TRANSFER_INGREDIENTS, { ingredient, value });
       }
-      commit(UPDATE_INGREDIENTS, ingredients);
     },
   },
 };
