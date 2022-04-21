@@ -5,7 +5,7 @@
       type="button"
       class="button"
       :disabled="isButtonDisabled"
-      @click="changeOrder(order)"
+      @click="changeOrder()"
     >
       Готовьте!
     </button>
@@ -13,27 +13,34 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
-  name: "BuilderPizzaCounter",
+  name: "BuilderPriceCounter",
+  props: {
+    pizzaToOrder: {
+      type: Object,
+      required: true,
+    },
+    orderPrice: {
+      type: Number,
+      required: true,
+    },
+  },
   computed: {
-    ...mapState("builder", ["pizzas", "order"]),
-    ...mapGetters("builder", ["orderPrice"]),
     isButtonDisabled() {
       return (
-        this.order.name.length &&
-        !Object.values(this.order.ingredients).some((item) => item >= 1)
+        this.pizzaToOrder.name.length &&
+        !Object.values(this.pizzaToOrder.ingredients).some((item) => item >= 1)
       );
     },
   },
   methods: {
     ...mapActions("cart", ["updateOrder"]),
-    ...mapActions("builder", ["clearOrder", "updatePrice"]),
-    async changeOrder(order) {
-      await this.updatePrice(this.orderPrice);
-      await this.updateOrder(order);
-      await this.clearOrder();
+    async changeOrder() {
+      this.pizzaToOrder.price = this.orderPrice;
+      await this.updateOrder(this.pizzaToOrder);
+      this.$emit("setDefaultSettings");
     },
   },
 };

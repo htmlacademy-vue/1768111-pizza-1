@@ -12,7 +12,7 @@
         <ul class="cart-list sheet">
           <CartPizza
             v-for="pizza in this.order.pizzas"
-            :key="pizza.id - 1"
+            :key="pizza.id"
             :pizza="pizza"
             class="cart-list__item"
           />

@@ -1,11 +1,6 @@
 <template>
   <li class="ingredients__item">
-    <AppDrag
-      :transferData="{
-        ingredient: this.ingredientName,
-        value: this.ingredientCounter,
-      }"
-    >
+    <AppDrag :transferData="{ [this.ingredientName]: this.ingredientCounter }">
       <span :class="'filling filling--' + ingredient.class">{{
         ingredient.name
       }}</span>
@@ -40,7 +35,6 @@
 
 <script>
 import AppDrag from "@/common/components/AppDrag.vue";
-import { mapState, mapActions } from "vuex";
 
 export default {
   name: "BuilderIngredientSelector",
@@ -56,28 +50,22 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  computed: {
-    ...mapState("builder", ["order"]),
-    orderIngredients() {
-      return this.order.ingredients;
+    orderIngredients: {
+      type: Object,
+      required: true,
     },
   },
   methods: {
-    ...mapActions("builder", ["updateIngredients"]),
-    async changeIngredients(
-      ingredient = this.ingredientName,
-      value = this.ingredientCounter
-    ) {
-      await this.updateIngredients({ ingredient, value });
+    setIngredients() {
+      this.$emit("setIngredients", this.ingredientName, this.ingredientCounter);
     },
     increase() {
       this.ingredientCounter++;
-      this.changeIngredients();
+      this.setIngredients();
     },
     decrease() {
       this.ingredientCounter--;
-      this.changeIngredients();
+      this.setIngredients();
     },
   },
   watch: {
@@ -89,9 +77,6 @@ export default {
       },
       deep: true,
     },
-  },
-  updated() {
-    this.ingredientCounter = this.orderIngredients[this.ingredientName];
   },
 };
 </script>

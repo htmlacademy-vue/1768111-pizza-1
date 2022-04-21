@@ -25,6 +25,7 @@
       <button
         type="button"
         class="counter__button counter__button--minus"
+        :disabled="amount <= 0"
         @click="decrease"
       >
         <span class="visually-hidden">Меньше</span>
@@ -34,6 +35,7 @@
         name="counter"
         class="counter__input"
         :value="pizza.amount"
+        readonly
       />
       <button
         type="button"
@@ -60,11 +62,14 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { cloneDeep } from "lodash";
+import pizzas from "@/static/pizza.json";
+import { normalizePizzas } from "@/common/helpers.js";
 
 export default {
   name: "CartPizza",
   data() {
     return {
+      pizzas: normalizePizzas(pizzas),
       amount: this.pizza.amount,
     };
   },
@@ -75,7 +80,6 @@ export default {
     },
   },
   computed: {
-    ...mapState("builder", ["pizzas"]),
     ...mapState("cart", ["order"]),
     pizzaSize() {
       return this.pizzas.sizes.find(
@@ -112,7 +116,6 @@ export default {
   },
   methods: {
     ...mapActions("cart", ["updateAmount", "deletePizza"]),
-    ...mapActions("builder", ["changeOrder"]),
     async updateAddAmount(
       obj = "pizzas",
       id = this.pizza.id,
@@ -123,17 +126,23 @@ export default {
     async deleteOrderPizza() {
       await this.deletePizza(this.pizza.id);
     },
-    async changePizza() {
-      await this.changeOrder(this.pizza);
+    changePizza() {
       this.$router.push({ path: "/" });
     },
     increase() {
       this.amount++;
       this.updateAddAmount();
     },
-    decrease() {
+    async decrease() {
       this.amount--;
       this.amount === 0 ? this.deleteOrderPizza() : this.updateAddAmount();
+    },
+  },
+  watch: {
+    amount() {
+      if (this.amount === 0) {
+        this.deleteOrderPizza();
+      }
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <li class="additional-list__item sheet">
     <p class="additional-list__description">
-      <img :src="add.image" width="39" height="60" :alt="add.name" />
+      <img :src="this.imageSrc" width="39" height="60" :alt="add.name" />
       <span>{{ add.name }}</span>
     </p>
 
@@ -52,6 +52,11 @@ export default {
     add: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    imageSrc() {
+      return this.add.image.slice(8);
     },
   },
   methods: {

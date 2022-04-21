@@ -11,7 +11,7 @@ export default {
   namespaced: true,
   state: {
     order: {
-      pizzas: {},
+      pizzas: [],
       adds: normalizeOrderAdds(adds),
     },
   },
@@ -19,18 +19,24 @@ export default {
     isEmpty(state) {
       return Object.keys(state.order.pizzas).length === 0;
     },
-    totalPrice(state) {
+    pizzasPrice(state, getters) {
+      return !getters.isEmpty
+        ? Object.values(state.order.pizzas).map(
+            (item) => item.price * item.amount
+          )
+        : 0;
+    },
+    addsPrice(state, getters) {
+      return !getters.isEmpty
+        ? Object.values(state.order.adds).map(
+            (item) => item.price * item.amount
+          )
+        : 0;
+    },
+    totalPrice(state, getters) {
       if (Object.keys(state.order.pizzas).length !== 0) {
-        let pizzasPrice = Object.values(state.order.pizzas).map(
-          (item) => item.price * item.amount
-        );
-
-        let addsPrice = Object.values(state.order.adds).map(
-          (item) => item.price * item.amount
-        );
-
-        return (
-          [...pizzasPrice, ...addsPrice].reduce((acc, item) => acc + item, 0) ||
+        return [...getters.pizzasPrice, ...getters.addsPrice].reduce(
+          (acc, item) => acc + item,
           0
         );
       } else {
@@ -39,17 +45,25 @@ export default {
     },
   },
   mutations: {
-    [UPDATE_ORDER](state, newOrder) {
-      newOrder.amount = 1;
-      newOrder.id = newOrder.name;
-      state.order.pizzas[newOrder.id] = newOrder;
+    [UPDATE_ORDER](state, order) {
+      order.amount = 1;
+      order.id = Math.random().toString(16).slice(2);
+      state.order.pizzas.push(order);
     },
     [UPDATE_AMOUNT](state, { obj, id, amount }) {
-      if (obj === "adds") id--;
-      state.order[obj][id].amount = amount;
+      if (obj === "adds") {
+        id--;
+        state.order[obj][id].amount = amount;
+      }
+      if (obj === "pizzas") {
+        state.order[obj].find((el) => el.id === id).amount = amount;
+      }
     },
     [DELETE_PIZZA](state, id) {
-      Vue.delete(state.order.pizzas, id);
+      Vue.delete(
+        state.order.pizzas,
+        state.order.pizzas.findIndex((el) => el.id === id)
+      );
     },
   },
   actions: {

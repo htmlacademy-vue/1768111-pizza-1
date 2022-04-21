@@ -8,9 +8,9 @@
         id="pizza"
         placeholder="Введите
       название пиццы"
-        v-model.trim="order.name"
+        v-model.trim="pizzaName"
         maxlength="30"
-        @input="changeName($event.target.value)"
+        @input="setName($event.target.value)"
         required
       />
     </label>
@@ -19,7 +19,7 @@
       <div class="pizza" :class="getFoundationClass">
         <div class="pizza__wrapper">
           <div
-            v-for="(ingredient, name) in this.order.ingredients"
+            v-for="(ingredient, name) in this.pizzaToOrder.ingredients"
             :key="name + ingredient"
             class="pizza__filling"
             :class="[
@@ -35,27 +35,32 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-
 export default {
   name: "BuilderPizzaView",
   data() {
-    return {};
+    return {
+      pizzaName: "",
+    };
+  },
+  props: {
+    pizzaToOrder: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
-    ...mapState("builder", ["pizzas", "order"]),
     getFoundationClass() {
       let foundationClass = "";
-      switch (this.order.sauce.name) {
+      switch (this.pizzaToOrder.sauce.name) {
         case "tomato":
           foundationClass =
-            this.order.dough.name === "large"
+            this.pizzaToOrder.dough.name === "large"
               ? "pizza--foundation--big-tomato"
               : "pizza--foundation--small-tomato";
           break;
         case "creamy":
           foundationClass =
-            this.order.dough.name === "large"
+            this.pizzaToOrder.dough.name === "large"
               ? "pizza--foundation--big-creamy"
               : "pizza--foundation--small-creamy";
           break;
@@ -64,9 +69,16 @@ export default {
     },
   },
   methods: {
-    ...mapActions("builder", ["updateName"]),
-    async changeName(name) {
-      await this.updateName(name);
+    setName() {
+      this.$emit("setName", this.pizzaName);
+    },
+  },
+  watch: {
+    pizzaToOrder: {
+      handler(value) {
+        this.pizzaName = value.name;
+      },
+      deep: true,
     },
   },
 };
