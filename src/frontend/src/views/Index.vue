@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { normalizePizzas, getIngredientsList } from "@/common/helpers.js";
 import pizzas from "@/static/pizza.json";
 
@@ -79,10 +80,14 @@ export default {
         },
         ingredients: getIngredientsList(pizzas.ingredients),
         name: "",
+        price: 700,
+        id: null,
+        amount: null,
       },
     };
   },
   computed: {
+    ...mapState("builder", ["pizzaToUpdate"]),
     doughPrice() {
       return this.pizzas.dough.find(
         (item) => item.class === this.pizzaToOrder.dough.name
@@ -151,8 +156,20 @@ export default {
         },
         ingredients: getIngredientsList(pizzas.ingredients),
         name: "",
+        price: 700,
+        id: null,
+        amount: null,
       });
     },
+  },
+  created() {
+    if (Object.keys(this.pizzaToUpdate).length !== 0) {
+      this.pizzaToOrder = Object.assign(
+        {},
+        this.pizzaToOrder,
+        this.pizzaToUpdate
+      );
+    }
   },
 };
 </script>

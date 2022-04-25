@@ -37,9 +37,12 @@ export default {
   },
   methods: {
     ...mapActions("cart", ["updateOrder"]),
+    ...mapActions("builder", ["clearPizza"]),
     async changeOrder() {
       this.pizzaToOrder.price = this.orderPrice;
+      this.pizzaToOrder.amount = 1;
       await this.updateOrder(this.pizzaToOrder);
+      await this.clearPizza();
       this.$emit("setDefaultSettings");
     },
   },

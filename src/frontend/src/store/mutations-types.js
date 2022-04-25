@@ -9,4 +9,6 @@ export const UPDATE_AMOUNT = "UPDATE_AMOUNT";
 export const CHANGE_ORDER = "CHANGE_ORDER";
 export const UPDATE_ORDER = "UPDATE_ORDER";
 export const CLEAR_ORDER = "CLEAR_ORDER";
+export const CLEAR_PIZZA = "CLEAR_PIZZA";
 export const DELETE_PIZZA = "DELETE_PIZZA";
+export const UPDATE_PIZZA = "UPDATE_PIZZA";

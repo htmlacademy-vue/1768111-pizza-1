@@ -2,6 +2,7 @@ import {
   UPDATE_ORDER,
   UPDATE_AMOUNT,
   DELETE_PIZZA,
+  CLEAR_ORDER,
 } from "@/store/mutations-types.js";
 import Vue from "vue";
 import adds from "@/static/misc.json";
@@ -46,9 +47,19 @@ export default {
   },
   mutations: {
     [UPDATE_ORDER](state, order) {
-      order.amount = 1;
-      order.id = Math.random().toString(16).slice(2);
-      state.order.pizzas.push(order);
+      if (!order.id) {
+        order.amount = 1;
+        order.id = Math.random().toString(16).slice(2);
+        state.order.pizzas.push(order);
+      } else {
+        state.order.pizzas[
+          state.order.pizzas.findIndex((el) => el.id === order.id)
+        ] = Object.assign(
+          {},
+          state.order.pizzas.find((el) => el.id === order.id),
+          order
+        );
+      }
     },
     [UPDATE_AMOUNT](state, { obj, id, amount }) {
       if (obj === "adds") {
@@ -65,6 +76,9 @@ export default {
         state.order.pizzas.findIndex((el) => el.id === id)
       );
     },
+    [CLEAR_ORDER](state) {
+      state.order.pizzas = [];
+    },
   },
   actions: {
     updateOrder({ commit }, newOrder) {
@@ -75,6 +89,9 @@ export default {
     },
     deletePizza({ commit }, id) {
       commit(DELETE_PIZZA, id);
+    },
+    clearOrder({ commit }) {
+      commit(CLEAR_ORDER);
     },
   },
 };

@@ -116,6 +116,7 @@ export default {
   },
   methods: {
     ...mapActions("cart", ["updateAmount", "deletePizza"]),
+    ...mapActions("builder", ["updatePizza"]),
     async updateAddAmount(
       obj = "pizzas",
       id = this.pizza.id,
@@ -127,22 +128,16 @@ export default {
       await this.deletePizza(this.pizza.id);
     },
     changePizza() {
+      this.updatePizza(this.pizza);
       this.$router.push({ path: "/" });
     },
     increase() {
       this.amount++;
       this.updateAddAmount();
     },
-    async decrease() {
+    decrease() {
       this.amount--;
       this.amount === 0 ? this.deleteOrderPizza() : this.updateAddAmount();
-    },
-  },
-  watch: {
-    amount() {
-      if (this.amount === 0) {
-        this.deleteOrderPizza();
-      }
     },
   },
 };

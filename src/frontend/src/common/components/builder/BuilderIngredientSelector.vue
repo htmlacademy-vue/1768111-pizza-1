@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import AppDrag from "@/common/components/AppDrag.vue";
 
 export default {
@@ -54,6 +55,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  computed: {
+    ...mapState("builder", ["pizzaToUpdate"]),
   },
   methods: {
     setIngredients() {
@@ -77,6 +81,12 @@ export default {
       },
       deep: true,
     },
+  },
+  created() {
+    if (Object.keys(this.pizzaToUpdate).length !== 0) {
+      this.ingredientCounter =
+        this.pizzaToUpdate.ingredients[this.ingredientName];
+    }
   },
 };
 </script>

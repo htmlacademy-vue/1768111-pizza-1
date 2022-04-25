@@ -81,5 +81,10 @@ export default {
       deep: true,
     },
   },
+  created() {
+    if (Object.keys(this.pizzaToOrder.name)) {
+      this.pizzaName = this.pizzaToOrder.name;
+    }
+  },
 };
 </script>

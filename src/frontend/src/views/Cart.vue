@@ -11,7 +11,7 @@
 
         <ul class="cart-list sheet">
           <CartPizza
-            v-for="pizza in this.order.pizzas"
+            v-for="pizza in order.pizzas"
             :key="pizza.id"
             :pizza="pizza"
             class="cart-list__item"
@@ -100,7 +100,7 @@
 
 <script>
 import adds from "@/static/misc.json";
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import CartPizza from "@/common/components/cart/CartPizza.vue";
 import CartAdd from "@/common/components/cart/CartAdd.vue";
 
@@ -124,10 +124,12 @@ export default {
     ...mapState("cart", ["order"]),
     ...mapGetters("cart", ["totalPrice", "isEmpty"]),
     ...mapGetters("auth", ["isAuth"]),
+    ...mapActions("cart", ["clearOrder"]),
   },
   methods: {
     async checkout() {
       await this.$router.push("/success");
+      await this.clearOrder();
     },
   },
 };

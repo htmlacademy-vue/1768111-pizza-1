@@ -20,6 +20,7 @@
           name="counter"
           class="counter__input"
           :value="amount"
+          readonly
         />
         <button
           type="button"
