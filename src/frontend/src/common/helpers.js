@@ -12,3 +12,21 @@ export const normalizePizzas = (pizzas) => {
     ...pizzas,
   };
 };
+
+export const normalizeOrderAdds = (adds) => {
+  adds.forEach((n) => (n.amount = 1));
+  return {
+    ...adds,
+  };
+};
+
+export const getIngredientsList = (obj) => {
+  let result = {};
+  for (let i = 0; i < obj.length; i++) {
+    result[obj[i].class] = 0;
+  }
+  return result;
+};
+
+export const capitalize = (string) =>
+  `${string.charAt(0).toUpperCase()}${string.slice(1)}`;

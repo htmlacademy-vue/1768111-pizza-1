@@ -8,8 +8,9 @@
         id="pizza"
         placeholder="Введите
       название пиццы"
-        v-model="pizzaName"
-        @input="setName"
+        v-model.trim="pizzaName"
+        maxlength="30"
+        @input="setName($event.target.value)"
         required
       />
     </label>
@@ -18,11 +19,11 @@
       <div class="pizza" :class="getFoundationClass">
         <div class="pizza__wrapper">
           <div
-            v-for="(ingredient, name) in this.order.ingredients"
+            v-for="(ingredient, name) in this.pizzaToOrder.ingredients"
             :key="name + ingredient"
             class="pizza__filling"
             :class="[
-              'pizza__filling--' + name,
+              ingredient >= 1 ? 'pizza__filling--' + name : '',
               ingredient == 2 ? 'pizza__filling--second' : '',
               ingredient == 3 ? 'pizza__filling--third' : '',
             ]"
@@ -42,9 +43,29 @@ export default {
     };
   },
   props: {
-    order: {
+    pizzaToOrder: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    getFoundationClass() {
+      let foundationClass = "";
+      switch (this.pizzaToOrder.sauce.name) {
+        case "tomato":
+          foundationClass =
+            this.pizzaToOrder.dough.name === "large"
+              ? "pizza--foundation--big-tomato"
+              : "pizza--foundation--small-tomato";
+          break;
+        case "creamy":
+          foundationClass =
+            this.pizzaToOrder.dough.name === "large"
+              ? "pizza--foundation--big-creamy"
+              : "pizza--foundation--small-creamy";
+          break;
+      }
+      return foundationClass;
     },
   },
   methods: {
@@ -52,25 +73,18 @@ export default {
       this.$emit("setName", this.pizzaName);
     },
   },
-  computed: {
-    getFoundationClass() {
-      let foundationClass = "";
-      switch (this.order.sauce.name) {
-        case "tomato":
-          foundationClass =
-            this.order.dough.name === "large"
-              ? "pizza--foundation--big-tomato"
-              : "pizza--foundation--small-tomato";
-          break;
-        case "creamy":
-          foundationClass =
-            this.order.dough.name === "large"
-              ? "pizza--foundation--big-creamy"
-              : "pizza--foundation--small-creamy";
-          break;
-      }
-      return foundationClass;
+  watch: {
+    pizzaToOrder: {
+      handler(value) {
+        this.pizzaName = value.name;
+      },
+      deep: true,
     },
+  },
+  created() {
+    if (Object.keys(this.pizzaToOrder.name)) {
+      this.pizzaName = this.pizzaToOrder.name;
+    }
   },
 };
 </script>

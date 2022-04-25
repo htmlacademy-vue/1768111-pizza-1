@@ -14,7 +14,7 @@
             :value="dough.class"
             class="visually-hidden"
             :checked="dough.class === orderDough.name"
-            @change="setDough"
+            @click="setDough($event)"
           />
           <b>{{ dough.name }}</b>
           <span>{{ dough.description }}</span>
@@ -30,9 +30,6 @@ import RadioButton from "@/common/components/RadioButton.vue";
 export default {
   name: "BuilderDoughSelector",
   components: { RadioButton },
-  data() {
-    return {};
-  },
   props: {
     doughs: {
       type: Array,

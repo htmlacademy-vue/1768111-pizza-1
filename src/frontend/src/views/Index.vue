@@ -8,29 +8,34 @@
           <BuilderDoughSelector
             :doughs="pizzas.dough"
             @setDough="setDough"
-            :orderDough="order.dough"
+            :orderDough="pizzaToOrder.dough"
           />
-
           <BuilderSizeSelector
             :sizes="pizzas.sizes"
             @setSize="setSize"
-            :orderSize="order.size"
+            :orderSize="pizzaToOrder.size"
           />
-
           <BuilderIngredientsSelector
             :ingredients="pizzas.ingredients"
             :sauces="pizzas.sauces"
-            :orderIngredients="order.ingredients"
-            :orderSauce="order.sauce"
+            :orderIngredients="pizzaToOrder.ingredients"
+            :orderSauce="pizzaToOrder.sauce"
             @setSauce="setSauce"
             @setIngredients="setIngredients"
           />
 
           <div class="content__pizza">
             <AppDrop @drop="transferIngredient">
-              <BuilderPizzaView :order="order" @setName="setName" />
+              <BuilderPizzaView
+                :pizzaToOrder="pizzaToOrder"
+                @setName="setName"
+              />
             </AppDrop>
-            <BuilderPriceCounter :order="order" :orderPrice="orderPrice" />
+            <BuilderPriceCounter
+              :pizzaToOrder="pizzaToOrder"
+              :orderPrice="orderPrice"
+              @setDefaultSettings="setDefaultSettings"
+            />
           </div>
         </div>
       </form>
@@ -39,10 +44,10 @@
 </template>
 
 <script>
-import "@/static/misc.json";
+import { mapState } from "vuex";
+import { normalizePizzas, getIngredientsList } from "@/common/helpers.js";
 import pizzas from "@/static/pizza.json";
-import "@/static/user.json";
-import { normalizePizzas } from "@/common/helpers.js";
+
 import BuilderDoughSelector from "@/common/components/builder/BuilderDoughSelector.vue";
 import BuilderSizeSelector from "@/common/components/builder/BuilderSizeSelector.vue";
 import BuilderIngredientsSelector from "@/common/components/builder/BuilderIngredientsSelector.vue";
@@ -63,7 +68,7 @@ export default {
   data() {
     return {
       pizzas: normalizePizzas(pizzas),
-      order: {
+      pizzaToOrder: {
         dough: {
           name: "light",
         },
@@ -73,71 +78,40 @@ export default {
         sauce: {
           name: "tomato",
         },
-        ingredients: {},
+        ingredients: getIngredientsList(pizzas.ingredients),
         name: "",
-        price: 0,
+        price: 700,
+        id: null,
+        amount: null,
       },
     };
   },
-  methods: {
-    setName(name) {
-      this.order.name = name;
-    },
-    setDough(dough) {
-      this.order.dough.name = dough;
-    },
-    setSize(size) {
-      this.order.size.name = size;
-    },
-    setSauce(sauce) {
-      this.order.sauce.name = sauce;
-    },
-    setIngredients(ingredientName, ingredientCounter) {
-      this.$set(this.order.ingredients, ingredientName, ingredientCounter);
-      this.cleanEmptyIngredients();
-    },
-    cleanEmptyIngredients() {
-      for (let propName in this.order.ingredients) {
-        if (this.order.ingredients[propName] === 0) {
-          delete this.order.ingredients[propName];
-        }
-      }
-      return this.order.ingredients;
-    },
-    transferIngredient(ingredient) {
-      this.order.ingredients = { ...this.order.ingredients, ...ingredient };
-      if (this.order.ingredients[Object.keys(ingredient)[0]] < 3) {
-        this.order.ingredients[Object.keys(ingredient)[0]] += 1;
-      }
-      return this.order.ingredients;
-    },
-  },
   computed: {
+    ...mapState("builder", ["pizzaToUpdate"]),
     doughPrice() {
       return this.pizzas.dough.find(
-        (item) => item.class === this.order.dough.name
+        (item) => item.class === this.pizzaToOrder.dough.name
       ).price;
     },
     sizeMultiplier() {
       return this.pizzas.sizes.find(
-        (item) => item.class === this.order.size.name
+        (item) => item.class === this.pizzaToOrder.size.name
       ).multiplier;
     },
     saucePrice() {
       return this.pizzas.sauces.find(
-        (item) => item.class === this.order.sauce.name
+        (item) => item.class === this.pizzaToOrder.sauce.name
       ).price;
     },
     ingredientsPrice() {
       let result = 0;
-      let keys = Object.keys(this.order.ingredients);
+      let keys = Object.keys(this.pizzaToOrder.ingredients);
 
       for (let i = 0; i < keys.length; i++) {
         result +=
           this.pizzas.ingredients.find((item) => item.class === keys[i]).price *
-          this.order.ingredients[keys[i]];
+            this.pizzaToOrder.ingredients[keys[i]] || 0;
       }
-
       return result;
     },
     orderPrice() {
@@ -146,6 +120,56 @@ export default {
         (this.doughPrice + this.saucePrice + this.ingredientsPrice)
       );
     },
+  },
+  methods: {
+    setName(name) {
+      this.pizzaToOrder.name = name;
+    },
+    setDough(dough) {
+      this.pizzaToOrder.dough.name = dough;
+    },
+    setSize(size) {
+      this.pizzaToOrder.size.name = size;
+    },
+    setSauce(sauce) {
+      this.pizzaToOrder.sauce.name = sauce;
+    },
+    setIngredients(ingredientName, ingredientCounter) {
+      this.pizzaToOrder.ingredients[ingredientName] = ingredientCounter;
+    },
+    transferIngredient(ingredient) {
+      if (this.pizzaToOrder.ingredients[Object.keys(ingredient)[0]] < 3) {
+        this.pizzaToOrder.ingredients[Object.keys(ingredient)[0]] += 1;
+      }
+      return this.pizzaToOrder.ingredients;
+    },
+    setDefaultSettings() {
+      this.pizzaToOrder = Object.assign({}, this.pizzaToOrder, {
+        dough: {
+          name: "light",
+        },
+        size: {
+          name: "normal",
+        },
+        sauce: {
+          name: "tomato",
+        },
+        ingredients: getIngredientsList(pizzas.ingredients),
+        name: "",
+        price: 700,
+        id: null,
+        amount: null,
+      });
+    },
+  },
+  created() {
+    if (Object.keys(this.pizzaToUpdate).length !== 0) {
+      this.pizzaToOrder = Object.assign(
+        {},
+        this.pizzaToOrder,
+        this.pizzaToUpdate
+      );
+    }
   },
 };
 </script>

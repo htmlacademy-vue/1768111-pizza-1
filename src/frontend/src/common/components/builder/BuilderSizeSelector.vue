@@ -14,7 +14,7 @@
             :value="size.class"
             class="visually-hidden"
             :checked="size.class === orderSize.name"
-            @change="setSize"
+            @click="setSize($event)"
           />
           <span>{{ size.name }}</span>
         </label>
@@ -29,9 +29,6 @@ import RadioButton from "@/common/components/RadioButton.vue";
 export default {
   name: "BuilderSizeSelector",
   components: { RadioButton },
-  data() {
-    return {};
-  },
   props: {
     sizes: {
       type: Array,

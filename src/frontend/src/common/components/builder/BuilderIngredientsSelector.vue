@@ -15,7 +15,7 @@
               name="sauce"
               :value="sauce.class"
               :checked="sauce.class === orderSauce.name"
-              @change="setSauce"
+              @click="setSauce($event)"
             />
             <span>{{ sauce.name }}</span>
           </label>
@@ -46,11 +46,6 @@ import RadioButton from "@/common/components/RadioButton.vue";
 export default {
   name: "BuilderIngredientsSelector",
   components: { RadioButton, BuilderIngredientSelector },
-  data() {
-    return {
-      ingredientsToOrder: {},
-    };
-  },
   props: {
     ingredients: {
       type: Array,
@@ -74,7 +69,6 @@ export default {
       this.$emit("setSauce", evt.target.value);
     },
     setIngredients(ingredientName, ingredientCounter) {
-      this.$set(this.ingredientsToOrder, ingredientName, ingredientCounter);
       this.$emit("setIngredients", ingredientName, ingredientCounter);
     },
   },
