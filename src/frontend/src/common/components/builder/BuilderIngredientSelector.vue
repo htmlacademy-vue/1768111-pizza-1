@@ -10,7 +10,7 @@
         type="button"
         class="counter__button counter__button--minus"
         :disabled="ingredientCounter <= 0"
-        @click="decrease"
+        @click="updateAmount('minus')"
       >
         <span class="visually-hidden">Меньше</span>
       </button>
@@ -25,7 +25,7 @@
         type="button"
         class="counter__button counter__button--plus"
         :disabled="ingredientCounter >= 3"
-        @click="increase"
+        @click="updateAmount('plus')"
       >
         <span class="visually-hidden">Больше</span>
       </button>
@@ -63,12 +63,8 @@ export default {
     setIngredients() {
       this.$emit("setIngredients", this.ingredientName, this.ingredientCounter);
     },
-    increase() {
-      this.ingredientCounter++;
-      this.setIngredients();
-    },
-    decrease() {
-      this.ingredientCounter--;
+    updateAmount(action) {
+      action === "plus" ? this.ingredientCounter++ : this.ingredientCounter--;
       this.setIngredients();
     },
   },

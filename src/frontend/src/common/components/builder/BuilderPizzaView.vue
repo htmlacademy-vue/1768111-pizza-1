@@ -50,22 +50,10 @@ export default {
   },
   computed: {
     getFoundationClass() {
-      let foundationClass = "";
-      switch (this.pizzaToOrder.sauce.name) {
-        case "tomato":
-          foundationClass =
-            this.pizzaToOrder.dough.name === "large"
-              ? "pizza--foundation--big-tomato"
-              : "pizza--foundation--small-tomato";
-          break;
-        case "creamy":
-          foundationClass =
-            this.pizzaToOrder.dough.name === "large"
-              ? "pizza--foundation--big-creamy"
-              : "pizza--foundation--small-creamy";
-          break;
-      }
-      return foundationClass;
+      let size = this.pizzaToOrder.dough.name === "large" ? "big" : "small";
+      let sauce =
+        this.pizzaToOrder.sauce.name === "tomato" ? "tomato" : "creamy";
+      return `pizza--foundation--${size}-${sauce}`;
     },
   },
   methods: {
