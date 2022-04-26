@@ -1,4 +1,4 @@
-import NOTIFICATION_TYPES from "@/common/constants";
+import { NOTIFICATION_TYPES } from "@/common/constants";
 
 export default class Notifier {
   #store;
