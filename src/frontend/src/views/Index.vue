@@ -6,18 +6,14 @@
           <h1 class="title title--big">Конструктор пиццы</h1>
 
           <BuilderDoughSelector
-            :doughs="pizzas.dough"
             @setDough="setDough"
             :orderDough="pizzaToOrder.dough"
           />
           <BuilderSizeSelector
-            :sizes="pizzas.sizes"
             @setSize="setSize"
             :orderSize="pizzaToOrder.size"
           />
           <BuilderIngredientsSelector
-            :ingredients="pizzas.ingredients"
-            :sauces="pizzas.sauces"
             :orderIngredients="pizzaToOrder.ingredients"
             :orderSauce="pizzaToOrder.sauce"
             @setSauce="setSauce"
@@ -45,9 +41,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { normalizePizzas, getIngredientsList } from "@/common/helpers.js";
-import pizzas from "@/static/pizza.json";
-
+import { getIngredientsList } from "@/common/helpers.js";
 import BuilderDoughSelector from "@/common/components/builder/BuilderDoughSelector.vue";
 import BuilderSizeSelector from "@/common/components/builder/BuilderSizeSelector.vue";
 import BuilderIngredientsSelector from "@/common/components/builder/BuilderIngredientsSelector.vue";
@@ -67,7 +61,6 @@ export default {
   },
   data() {
     return {
-      pizzas: normalizePizzas(pizzas),
       pizzaToOrder: {
         dough: {
           name: "light",
@@ -78,7 +71,7 @@ export default {
         sauce: {
           name: "tomato",
         },
-        ingredients: getIngredientsList(pizzas.ingredients),
+        ingredients: {},
         name: "",
         price: 700,
         id: null,
@@ -88,22 +81,39 @@ export default {
   },
   computed: {
     ...mapState("builder", ["pizzaToUpdate"]),
+    ...mapState("cart", ["order", "pizzas"]),
+    ingredients: {
+      get() {
+        return this.pizzas.ingredients;
+      },
+      set(newValue) {
+        this.pizzaToOrder.ingredients = getIngredientsList(newValue);
+      },
+    },
     doughPrice() {
+      if (!this.pizzas.dough.length) return 0;
+
       return this.pizzas.dough.find(
         (item) => item.class === this.pizzaToOrder.dough.name
       ).price;
     },
     sizeMultiplier() {
+      if (!this.pizzas.sizes.length) return 0;
+
       return this.pizzas.sizes.find(
         (item) => item.class === this.pizzaToOrder.size.name
       ).multiplier;
     },
     saucePrice() {
+      if (!this.pizzas.sauces.length) return 0;
+
       return this.pizzas.sauces.find(
         (item) => item.class === this.pizzaToOrder.sauce.name
       ).price;
     },
     ingredientsPrice() {
+      if (!this.pizzas.ingredients.length) return 0;
+
       let result = 0;
       let keys = Object.keys(this.pizzaToOrder.ingredients);
 
@@ -154,7 +164,7 @@ export default {
         sauce: {
           name: "tomato",
         },
-        ingredients: getIngredientsList(pizzas.ingredients),
+        ingredients: getIngredientsList(this.ingredients),
         name: "",
         price: 700,
         id: null,
@@ -170,6 +180,12 @@ export default {
         this.pizzaToUpdate
       );
     }
+  },
+  watch: {
+    ingredients(val) {
+      console.log(val);
+      this.pizzaToOrder.ingredients = getIngredientsList(val);
+    },
   },
 };
 </script>

@@ -1,18 +1,5 @@
 <template>
   <main class="layout">
-    <div class="layout__sidebar sidebar">
-      <router-link class="layout__link" :to="{ name: 'Orders' }"
-        >История заказов</router-link
-      >
-
-      <router-link
-        :to="{ name: 'Profile' }"
-        active-class="layout__link--active"
-        class="layout__link"
-        >Мои данные</router-link
-      >
-    </div>
-
     <div class="layout__content">
       <div class="layout__title">
         <h1 class="title title--big">Мои данные</h1>

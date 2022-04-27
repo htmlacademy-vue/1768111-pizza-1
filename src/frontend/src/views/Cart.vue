@@ -20,7 +20,7 @@
 
         <div class="cart__additional">
           <ul class="additional-list">
-            <CartAdd v-for="add in adds" :key="add.id" :add="add" />
+            <CartAdd v-for="add in order.adds" :key="add.id" :add="add" />
           </ul>
         </div>
 
@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import adds from "@/static/misc.json";
 import { mapState, mapGetters, mapActions } from "vuex";
 import CartPizza from "@/common/components/cart/CartPizza.vue";
 import CartAdd from "@/common/components/cart/CartAdd.vue";
@@ -112,7 +111,6 @@ export default {
   },
   data() {
     return {
-      adds: adds,
       orderType: "2",
       userStreet: "",
       userHouse: "",

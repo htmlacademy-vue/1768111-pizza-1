@@ -5,7 +5,7 @@
 
       <div class="sheet__content diameter">
         <label
-          v-for="size in sizes"
+          v-for="size in pizzas.sizes"
           :key="size.id"
           :class="'diameter__input diameter__input--' + size.class"
         >
@@ -25,19 +25,19 @@
 
 <script>
 import RadioButton from "@/common/components/RadioButton.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "BuilderSizeSelector",
   components: { RadioButton },
   props: {
-    sizes: {
-      type: Array,
-      required: true,
-    },
     orderSize: {
       type: Object,
       required: true,
     },
+  },
+  computed: {
+    ...mapState("cart", ["pizzas"]),
   },
   methods: {
     setSize(evt) {

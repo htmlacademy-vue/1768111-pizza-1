@@ -40,9 +40,23 @@ export const capitalize = (string) =>
 
 export const createResources = (notifier) => {
   return {
-    [RESOURCES.USERS]: new ReadOnlyApiService(RESOURCES.USERS, notifier),
     [RESOURCES.AUTH]: new AuthApiService(notifier),
-    [RESOURCES.COLUMNS]: new CrudApiService(RESOURCES.COLUMNS, notifier),
-    [RESOURCES.COMMENTS]: new CrudApiService(RESOURCES.COMMENTS, notifier),
+    [RESOURCES.USER]: new ReadOnlyApiService(RESOURCES.USER, notifier),
+    [RESOURCES.INGREDIENT]: new ReadOnlyApiService(
+      RESOURCES.INGREDIENT,
+      notifier
+    ),
+    [RESOURCES.DOUGH]: new ReadOnlyApiService(RESOURCES.DOUGH, notifier),
+    [RESOURCES.MISC]: new ReadOnlyApiService(RESOURCES.MISC, notifier),
+    [RESOURCES.MISC]: new ReadOnlyApiService(RESOURCES.MISC, notifier),
+    [RESOURCES.SAUCE]: new ReadOnlyApiService(RESOURCES.SAUCE, notifier),
+    [RESOURCES.SIZE]: new ReadOnlyApiService(RESOURCES.SIZE, notifier),
+    [RESOURCES.ORDER]: new CrudApiService(RESOURCES.ORDER, notifier),
+    [RESOURCES.ADDRESS]: new CrudApiService(RESOURCES.ADDRESS, notifier),
   };
+};
+
+export const setAuth = (store) => {
+  store.$api.auth.setAuthHeader();
+  store.dispatch("Auth/getMe");
 };

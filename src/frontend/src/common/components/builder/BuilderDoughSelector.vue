@@ -5,7 +5,7 @@
 
       <div class="sheet__content dough">
         <label
-          v-for="dough in doughs"
+          v-for="dough in pizzas.dough"
           :key="dough.id"
           :class="'dough__input dough__input--' + dough.class"
         >
@@ -26,19 +26,19 @@
 
 <script>
 import RadioButton from "@/common/components/RadioButton.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "BuilderDoughSelector",
   components: { RadioButton },
   props: {
-    doughs: {
-      type: Array,
-      required: true,
-    },
     orderDough: {
       type: Object,
       required: true,
     },
+  },
+  computed: {
+    ...mapState("cart", ["pizzas"]),
   },
   methods: {
     setDough(evt) {

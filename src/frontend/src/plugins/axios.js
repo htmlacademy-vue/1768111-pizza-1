@@ -3,7 +3,7 @@ import axios from "axios";
 
 // создаём новый экземпляр axios с /api в качестве базового URL
 const axiosInstance = axios.create({
-  baseURL: "/api/",
+  baseURL: "http://localhost:3000/",
 });
 
 // добавляем централизованную обработку ошибок при получении ответа от сервера

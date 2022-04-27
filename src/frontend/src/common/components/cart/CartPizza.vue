@@ -62,14 +62,11 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { cloneDeep } from "lodash";
-import pizzas from "@/static/pizza.json";
-import { normalizePizzas } from "@/common/helpers.js";
 
 export default {
   name: "CartPizza",
   data() {
     return {
-      pizzas: normalizePizzas(pizzas),
       amount: this.pizza.amount,
     };
   },
@@ -80,7 +77,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("cart", ["order"]),
+    ...mapState("cart", ["order", "pizzas"]),
     pizzaSize() {
       return this.pizzas.sizes.find(
         (item) => item.class == this.pizza.size.name
@@ -92,7 +89,7 @@ export default {
         .name.toLowerCase();
     },
     pizzaDough() {
-      return this.pizza.dough.name === "light"
+      return this.pizzas.dough.name === "light"
         ? "на тонком тесте"
         : "на толстом тесте";
     },

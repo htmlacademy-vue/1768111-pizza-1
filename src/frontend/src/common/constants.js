@@ -15,7 +15,14 @@ export const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-
 
 export const RESOURCES = {
   AUTH: "auth",
-  TICKS: "ticks",
+  USER: "user",
+  ADDRESS: "addresses",
+  ORDER: "orders",
+  INGREDIENT: "ingredients",
+  DOUGH: "dough",
+  MISC: "misc",
+  SAUCE: "sauces",
+  SIZE: "sizes",
 };
 
 export const MESSAGE_LIVE_TIME = 1000;

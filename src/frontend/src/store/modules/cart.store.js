@@ -3,17 +3,19 @@ import {
   UPDATE_AMOUNT,
   DELETE_PIZZA,
   CLEAR_ORDER,
+  GET_ADDS,
+  GET_PIZZAS,
 } from "@/store/mutations-types.js";
 import Vue from "vue";
-import adds from "@/static/misc.json";
-import { normalizeOrderAdds } from "@/common/helpers.js";
+import { normalizeOrderAdds, normalizePizzas } from "@/common/helpers.js";
 
 export default {
   namespaced: true,
   state: {
+    pizzas: {},
     order: {
       pizzas: [],
-      adds: normalizeOrderAdds(adds),
+      adds: [],
     },
   },
   getters: {
@@ -79,6 +81,12 @@ export default {
     [CLEAR_ORDER](state) {
       state.order.pizzas = [];
     },
+    [GET_ADDS](state, adds) {
+      state.order.adds = adds;
+    },
+    [GET_PIZZAS](state, pizzas) {
+      state.pizzas = pizzas;
+    },
   },
   actions: {
     updateOrder({ commit }, newOrder) {
@@ -92,6 +100,23 @@ export default {
     },
     clearOrder({ commit }) {
       commit(CLEAR_ORDER);
+    },
+    async getAdds({ commit }) {
+      const adds = await this.$api.misc.query();
+      commit(GET_ADDS, normalizeOrderAdds(adds));
+    },
+    async getPizzas({ commit }) {
+      const dough = await this.$api.dough.query();
+      const ingredients = await this.$api.ingredients.query();
+      const sauces = await this.$api.sauces.query();
+      const sizes = await this.$api.sizes.query();
+      const pizzas = {};
+      pizzas.dough = dough;
+      pizzas.ingredients = ingredients;
+      pizzas.sauces = sauces;
+      pizzas.sizes = sizes;
+      const normalizedPizzas = normalizePizzas(pizzas);
+      commit(GET_PIZZAS, normalizedPizzas);
     },
   },
 };

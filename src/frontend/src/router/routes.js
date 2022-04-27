@@ -30,13 +30,13 @@ export default [
     path: "/orders",
     name: "Orders",
     component: () => import("@/views/Orders.vue"),
-    meta: { layout: "AppLayoutDefault" },
+    meta: { layout: "AppLayoutAuth" },
   },
 
   {
     path: "/profile",
     name: "Profile",
     component: () => import("@/views/Profile.vue"),
-    meta: { layout: "AppLayoutDefault" },
+    meta: { layout: "AppLayoutAuth" },
   },
 ];

@@ -12,14 +12,13 @@ import { MESSAGE_LIVE_TIME } from "@/common/constants";
 
 Vue.use(Vuex);
 
-const initState = () => ({});
+const initState = () => ({
+  notifications: [],
+});
 
 const state = initState();
 
 const actions = {
-  async init({ dispatch }) {
-    dispatch("Builder/query");
-  },
   async createNotification({ commit }, { ...notification }) {
     const uniqueNotification = {
       ...notification,
@@ -33,9 +32,21 @@ const actions = {
   },
 };
 
+const mutations = {
+  [ADD_NOTIFICATION](state, notification) {
+    state.notifications = [...state.notifications, notification];
+  },
+  [DELETE_NOTIFICATION](state, id) {
+    state.notifications = state.notifications.filter(
+      (notification) => notification.id !== id
+    );
+  },
+};
+
 export default new Vuex.Store({
   state,
   actions,
   modules,
+  mutations,
   plugins: [VuexPlugins],
 });
