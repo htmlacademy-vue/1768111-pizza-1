@@ -1,32 +1,28 @@
 <template>
   <main class="layout">
+    <div class="layout__sidebar sidebar">
+      <router-link
+        class="layout__link"
+        active-class="layout__link--active"
+        :to="{ name: 'Orders' }"
+        >История заказов</router-link
+      >
+      <router-link class="layout__link" :to="{ name: 'Profile' }"
+        >Мои данные</router-link
+      >
+    </div>
     <div class="layout__content">
       <div class="layout__title">
         <h1 class="title title--big">Мои данные</h1>
       </div>
 
       <div class="user">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="
-              @/assets/img/users/user5@2x.webp 1x,
-              @/assets/img/users/user5@4x.webp 2x
-            "
-          />
-          <img
-            src="@/assets/img/users/user5@2x.jpg"
-            srcset="@/assets/img/users/user5@4x.jpg"
-            alt="Василий Ложкин"
-            width="72"
-            height="72"
-          />
-        </picture>
+        <img :src="imageSrc" :alt="user.name" width="72" height="72" />
         <div class="user__name">
-          <span>Василий Ложкин</span>
+          <span>{{ user.name }}</span>
         </div>
         <p class="user__phone">
-          Контактный телефон: <span>+7 999-999-99-99</span>
+          Контактный телефон: <span>{{ user.phone }}</span>
         </p>
       </div>
 
@@ -130,7 +126,15 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "Profile",
+  computed: {
+    ...mapState("auth", ["user"]),
+    imageSrc() {
+      return this.user.avatar.slice(8);
+    },
+  },
 };
 </script>

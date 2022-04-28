@@ -91,28 +91,28 @@ export default {
       },
     },
     doughPrice() {
-      if (!this.pizzas.dough.length) return 0;
+      if (!this.pizzas.dough?.length) return 0;
 
       return this.pizzas.dough.find(
         (item) => item.class === this.pizzaToOrder.dough.name
       ).price;
     },
     sizeMultiplier() {
-      if (!this.pizzas.sizes.length) return 0;
+      if (!this.pizzas.sizes?.length) return 0;
 
       return this.pizzas.sizes.find(
         (item) => item.class === this.pizzaToOrder.size.name
       ).multiplier;
     },
     saucePrice() {
-      if (!this.pizzas.sauces.length) return 0;
+      if (!this.pizzas.sauces?.length) return 0;
 
       return this.pizzas.sauces.find(
         (item) => item.class === this.pizzaToOrder.sauce.name
       ).price;
     },
     ingredientsPrice() {
-      if (!this.pizzas.ingredients.length) return 0;
+      if (!this.pizzas.ingredients?.length) return 0;
 
       let result = 0;
       let keys = Object.keys(this.pizzaToOrder.ingredients);
@@ -183,7 +183,6 @@ export default {
   },
   watch: {
     ingredients(val) {
-      console.log(val);
       this.pizzaToOrder.ingredients = getIngredientsList(val);
     },
   },

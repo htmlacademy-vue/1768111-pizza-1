@@ -14,30 +14,8 @@
       <router-link :to="{ name: 'Cart' }">{{ totalPrice }} ₽</router-link>
     </div>
     <div class="header__user">
-      <router-link v-if="isAuth" :to="{ name: 'Profile' }">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="
-              @/assets/img/users/user5.webp    1x,
-              @/assets/img/users/user5@2x.webp 2x
-            "
-          />
-          <img
-            src="img/users/user5.jpg"
-            srcset="img/users/user5@2x.jpg"
-            alt="Василий Ложкин"
-            width="32"
-            height="32"
-          />
-        </picture>
-        <span>Василий Ложкин</span>
-      </router-link>
-      <router-link v-if="!isAuth" class="header__login" :to="{ name: 'Login' }">
+      <router-link class="header__login" :to="{ name: 'Login' }">
         <span>Войти</span></router-link
-      >
-      <router-link v-else class="header__logout" :to="{ name: 'Index' }"
-        ><span>Выйти</span></router-link
       >
     </div>
   </header>

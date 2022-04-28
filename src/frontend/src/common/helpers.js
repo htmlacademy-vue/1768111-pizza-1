@@ -58,5 +58,5 @@ export const createResources = (notifier) => {
 
 export const setAuth = (store) => {
   store.$api.auth.setAuthHeader();
-  store.dispatch("Auth/getMe");
+  store.dispatch("auth/getMe");
 };

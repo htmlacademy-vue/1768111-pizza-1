@@ -35,7 +35,9 @@
           />
         </label>
       </div>
-      <button type="submit" class="button">Авторизоваться</button>
+      <button type="submit" class="button" @click.prevent="onSubmit">
+        Авторизоваться
+      </button>
     </form>
   </div>
 </template>
@@ -73,7 +75,7 @@ export default {
     this.$refs.email.$refs.input.focus();
   },
   methods: {
-    ...mapActions("Auth", ["logIn"]),
+    ...mapActions("auth", ["logIn"]),
     async onSubmit() {
       if (
         !this.$validateFields(

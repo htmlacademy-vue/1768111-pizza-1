@@ -1,34 +1,46 @@
+import router from "@/router";
+
 export default {
   namespaced: true,
   state: {
-    user: false,
+    user: {
+      userToken: null,
+      avatar: null,
+      email: null,
+      id: null,
+      name: null,
+      phone: null,
+    },
   },
   getters: {
     isAuth(state) {
-      return state.user;
+      return !!state.user.userToken;
     },
   },
   mutations: {},
   actions: {
-    async logIn({ dispatch }, credentials) {
+    async logIn({ dispatch, state }, credentials) {
       const data = await this.$api.auth.login(credentials);
       this.$jwt.saveToken(data.token);
+      state.user.userToken = data.token;
       this.$api.auth.setAuthHeader();
       dispatch("getMe");
     },
-    async logOut(sendRequest = true) {
+    async logOut({ state }, sendRequest = true) {
       if (sendRequest) {
         await this.$api.auth.logout();
       }
       this.$jwt.destroyToken();
       this.$api.auth.setAuthHeader();
+      state.user.userToken = "";
+      router.push("/");
     },
-    async getMe({ dispatch }) {
+    async getMe({ dispatch, state }) {
       try {
-        /* eslint-disable */
         const data = await this.$api.auth.getMe();
+        const addresses = await this.$api.addresses.query();
+        state.user = { ...state.user, ...data, ...addresses };
       } catch {
-        // Note: in case of not proper login, i.e. token is expired
         dispatch("logOut", false);
       }
     },
