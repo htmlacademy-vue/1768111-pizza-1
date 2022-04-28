@@ -49,8 +49,19 @@ export default {
       const addresses = await this.$api.addresses.query();
       state.user.addresses.push(...addresses);
     },
-    async postAddress({ dispatch }, address) {
+    async postAddress({ dispatch, state }, address) {
       await this.$api.addresses.post(address);
+      state.user.addresses = [];
+      dispatch("getAddress");
+    },
+    async deleteAddress({ dispatch, state }, addressId) {
+      await this.$api.addresses.delete(addressId);
+      state.user.addresses = [];
+      dispatch("getAddress");
+    },
+    async editAddress({ dispatch, state }, addressId) {
+      await this.$api.addresses.put(addressId);
+      state.user.addresses = [];
       dispatch("getAddress");
     },
   },

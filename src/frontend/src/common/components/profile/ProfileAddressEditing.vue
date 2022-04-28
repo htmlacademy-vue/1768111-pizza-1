@@ -74,11 +74,15 @@
         <button
           type="button"
           class="button button--transparent"
-          @click="clearAddress"
+          @click="deleteAddresses(deleteEditData)"
         >
           Удалить
         </button>
-        <button type="submit" class="button" @click.prevent="post(postData)">
+        <button
+          type="submit"
+          class="button"
+          @click.prevent="publishAddresses()"
+        >
           Сохранить
         </button>
       </div>
@@ -90,7 +94,7 @@
 import { mapActions, mapState } from "vuex";
 
 export default {
-  name: "AddressEditing",
+  name: "ProfileAddressEditing",
   data() {
     return {
       id: null,
@@ -99,16 +103,20 @@ export default {
       building: "",
       flat: "",
       comment: "",
+      isEdit: false,
     };
+  },
+  props: {
+    addressToEdit: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     ...mapState("auth", ["user"]),
-    userID() {
-      return this.user.addresses.lenght;
-    },
     postData() {
       return {
-        userId: this.id,
+        userId: this.user.id,
         name: this.name,
         street: this.street,
         building: this.building,
@@ -116,17 +124,59 @@ export default {
         comment: this.comment,
       };
     },
+    editData() {
+      return {
+        id: this.id,
+        userId: this.user.id,
+        name: this.name,
+        street: this.street,
+        building: this.building,
+        flat: this.flat,
+        comment: this.comment,
+      };
+    },
+    deleteEditData() {
+      return this.id;
+    },
   },
   methods: {
-    ...mapActions("auth", ["postAddress"]),
+    ...mapActions("auth", ["postAddress", "deleteAddress", "editAddress"]),
     clearAddress() {
       this.id = null;
       this.name = this.street = this.building = this.flat = this.comment = "";
     },
-    async post(postData) {
-      await this.postAddress(postData);
+    async publishAddresses() {
+      if (!this.addressToEdit.id) {
+        await this.postAddress(this.postData);
+      } else {
+        await this.editAddress(this.editData);
+      }
       this.clearAddress();
+      this.$emit("clearAddressToEdit");
+      this.$emit("disableEdit");
     },
+    async editAddresses(postData) {
+      await this.editAddress(postData);
+      this.clearAddress();
+      this.$emit("clearAddressToEdit");
+      this.$emit("disableEdit");
+    },
+    async deleteAddresses(deleteData) {
+      await this.deleteAddress(deleteData);
+      this.clearAddress();
+      this.$emit("clearAddressToEdit");
+      this.$emit("disableEdit");
+    },
+  },
+  created() {
+    if (this.addressToEdit.id !== null) {
+      this.id = this.addressToEdit.id;
+      this.name = this.addressToEdit.name;
+      this.street = this.addressToEdit.street;
+      this.building = this.addressToEdit.building;
+      this.flat = this.addressToEdit.flat;
+      this.comment = this.addressToEdit.comment;
+    }
   },
 };
 </script>

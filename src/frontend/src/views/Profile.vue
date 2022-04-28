@@ -27,32 +27,24 @@
       </div>
 
       <div class="layout__address" v-if="user.addresses">
-        <div
+        <ProfileAddress
           class="sheet address-form"
           v-for="address in user.addresses"
           :key="address.id"
-        >
-          <div class="address-form__header">
-            <b>{{ address.name }}</b>
-            <div class="address-form__edit">
-              <button type="button" class="icon">
-                <span class="visually-hidden">Изменить адрес</span>
-              </button>
-            </div>
-          </div>
-          <p>{{ `${address.street}, ${address.building}, ${address.flat}` }}</p>
-          <small>{{ address.comment }}</small>
-        </div>
+          :address="address"
+          @setAddress="setAddress"
+          @enableEdit="enableEdit"
+        />
       </div>
-
-      <AddressEditing v-if="isEditing" />
+      <ProfileAddressEditing
+        v-if="isEditing"
+        :addressToEdit="addressToEdit"
+        @disableEdit="disableEdit"
+        @clearAddressToEdit="clearAddressToEdit"
+      />
 
       <div class="layout__button">
-        <button
-          type="button"
-          class="button button--border"
-          @click="isEditing = !isEditing"
-        >
+        <button type="button" class="button button--border" @click="enableEdit">
           Добавить новый адрес
         </button>
       </div>
@@ -61,23 +53,54 @@
 </template>
 
 <script>
-import AddressEditing from "@/common/components/profile/AddressEditing.vue";
+import ProfileAddressEditing from "@/common/components/profile/ProfileAddressEditing.vue";
+import ProfileAddress from "@/common/components/profile/ProfileAddress.vue";
 import { mapState } from "vuex";
 
 export default {
   name: "Profile",
   components: {
-    AddressEditing,
+    ProfileAddressEditing,
+    ProfileAddress,
   },
   data() {
     return {
       isEditing: false,
+      addressToEdit: {
+        id: null,
+        name: "",
+        street: "",
+        building: "",
+        flat: "",
+        comment: "",
+      },
     };
   },
   computed: {
     ...mapState("auth", ["user"]),
     imageSrc() {
       return this.user.avatar.slice(8);
+    },
+  },
+  methods: {
+    enableEdit() {
+      this.isEditing = true;
+    },
+    disableEdit() {
+      this.isEditing = false;
+    },
+    setAddress(address) {
+      this.addressToEdit = { ...this.addressToEdit, ...address };
+    },
+    clearAddressToEdit() {
+      this.addressToEdit = {
+        id: null,
+        name: "",
+        street: "",
+        building: "",
+        flat: "",
+        comment: "",
+      };
     },
   },
 };
