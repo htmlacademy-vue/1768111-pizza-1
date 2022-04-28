@@ -10,6 +10,7 @@ export default {
       id: null,
       name: null,
       phone: null,
+      addresses: [],
     },
   },
   getters: {
@@ -25,6 +26,7 @@ export default {
       state.user.userToken = data.token;
       this.$api.auth.setAuthHeader();
       dispatch("getMe");
+      dispatch("getAddress");
     },
     async logOut({ state }, sendRequest = true) {
       if (sendRequest) {
@@ -38,11 +40,18 @@ export default {
     async getMe({ dispatch, state }) {
       try {
         const data = await this.$api.auth.getMe();
-        const addresses = await this.$api.addresses.query();
-        state.user = { ...state.user, ...data, ...addresses };
+        state.user = { ...state.user, ...data };
       } catch {
         dispatch("logOut", false);
       }
+    },
+    async getAddress({ state }) {
+      const addresses = await this.$api.addresses.query();
+      state.user.addresses.push(...addresses);
+    },
+    async postAddress({ dispatch }, address) {
+      await this.$api.addresses.post(address);
+      dispatch("getAddress");
     },
   },
 };
