@@ -3,5 +3,9 @@ export default {
   state: {},
   getters: {},
   mutations: {},
-  actions: {},
+  actions: {
+    async postOrder(order) {
+      await this.$api.orders.post(order);
+    },
+  },
 };

@@ -181,6 +181,12 @@ export default {
       );
     }
   },
+  mounted() {
+    setTimeout(() => {
+      if (!this.pizzaToOrder.ingredients.hasOwnProperty("ham"))
+        this.setDefaultSettings();
+    }, 500);
+  },
   watch: {
     ingredients(val) {
       this.pizzaToOrder.ingredients = getIngredientsList(val);

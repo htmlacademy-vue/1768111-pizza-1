@@ -24,54 +24,7 @@
           </ul>
         </div>
 
-        <div class="cart__form">
-          <div class="cart-form">
-            <label class="cart-form__select">
-              <span class="cart-form__label">Получение заказа:</span>
-
-              <select name="test" class="select" v-model="orderType">
-                <option value="1">Заберу сам</option>
-                <option value="2">Новый адрес</option>
-                <option value="3" v-if="isAuth">Дом</option>
-              </select>
-            </label>
-
-            <label class="input input--big-label">
-              <span>Контактный телефон:</span>
-              <input
-                type="text"
-                name="tel"
-                placeholder="+7 999-999-99-99"
-                v-model="userPhone"
-              />
-            </label>
-
-            <div class="cart-form__address" v-if="orderType > 1">
-              <span class="cart-form__label">Новый адрес:</span>
-
-              <div class="cart-form__input">
-                <label class="input">
-                  <span>Улица*</span>
-                  <input type="text" name="street" v-model="userStreet" />
-                </label>
-              </div>
-
-              <div class="cart-form__input cart-form__input--small">
-                <label class="input">
-                  <span>Дом*</span>
-                  <input type="text" name="house" v-model="userHouse" />
-                </label>
-              </div>
-
-              <div class="cart-form__input cart-form__input--small">
-                <label class="input">
-                  <span>Квартира</span>
-                  <input type="text" name="apartment" v-model="userApartment" />
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CartForm @setData="setData" />
       </div>
     </main>
     <section class="footer">
@@ -90,7 +43,7 @@
       </div>
 
       <div class="footer__submit">
-        <button type="submit" class="button" @click.prevent="checkout">
+        <button type="submit" class="button" @click.prevent="postOrders()">
           Оформить заказ
         </button>
       </div>
@@ -102,32 +55,100 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 import CartPizza from "@/common/components/cart/CartPizza.vue";
 import CartAdd from "@/common/components/cart/CartAdd.vue";
+import CartForm from "@/common/components/cart/CartForm.vue";
 
 export default {
   name: "Cart",
   components: {
     CartPizza,
     CartAdd,
+    CartForm,
   },
   data() {
     return {
-      orderType: "2",
-      userStreet: "",
-      userHouse: "",
-      userApartment: "",
-      userPhone: "",
+      addressInfo: {
+        orderType: "2",
+        userStreet: "",
+        userHouse: "",
+        userApartment: "",
+        userPhone: "",
+      },
     };
   },
   computed: {
-    ...mapState("cart", ["order"]),
+    ...mapState("cart", ["order", "pizzas"]),
+    ...mapState("auth", ["user"]),
     ...mapGetters("cart", ["totalPrice", "isEmpty"]),
     ...mapGetters("auth", ["isAuth"]),
-    ...mapActions("cart", ["clearOrder"]),
   },
   methods: {
+    ...mapActions("cart", ["clearOrder"]),
+    ...mapActions("orders", ["postOrder"]),
     async checkout() {
       await this.$router.push("/success");
       await this.clearOrder();
+    },
+    setData(data) {
+      this.addressInfo = { ...this.addressInfo, ...data };
+    },
+    getMiscs() {
+      const miscs = [];
+      const misc = {
+        miscID: this.order.adds[0].id,
+        quantity: this.order.adds[0].amount,
+      };
+      miscs.push(misc);
+      return miscs;
+    },
+    // getMiscs() {
+    //   this.order.adds
+    //     .filter((el) => el.amount > 0)
+    //     .map((el) => {
+    //       return {
+    //         miscId: el.id,
+    //         quantity: el.amount,
+    //       };
+    //     });
+    // },
+    getPizzas() {
+      const pizzas = [];
+      const pizza = {
+        name: this.order.pizzas[0].name,
+        sauceId: this.pizzas.sauces.find(
+          (item) => item.class === this.order.pizzas[0].sauce.name
+        ).id,
+        doughId: this.pizzas.dough.find(
+          (item) => item.class === this.order.pizzas[0].dough.name
+        ).id,
+        sizeId: this.pizzas.sizes.find(
+          (item) => item.class === this.order.pizzas[0].size.name
+        ).id,
+        ingredients: [
+          {
+            ingredientId: 1,
+            quantity: 1,
+          },
+        ],
+        quantity: this.order.pizzas[0].amount,
+      };
+      pizzas.push(pizza);
+      return pizzas;
+    },
+    async postOrders() {
+      const data = {
+        userId: this.isAuth ? this.user.id : null,
+        phone: this.addressInfo.userPhone,
+        address: {
+          street: this.addressInfo.userStreet,
+          building: this.addressInfo.userHouse,
+          flat: this.addressInfo.userApartment,
+          comment: "",
+        },
+        pizzas: this.getPizzas(),
+        misc: this.getMiscs(),
+      };
+      console.log(data);
+      await this.postOrder(data);
     },
   },
 };
