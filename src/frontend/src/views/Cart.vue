@@ -43,7 +43,7 @@
       </div>
 
       <div class="footer__submit">
-        <button type="submit" class="button" @click.prevent="postOrders()">
+        <button type="submit" class="button" @click.prevent="postOrders">
           Оформить заказ
         </button>
       </div>
@@ -92,52 +92,49 @@ export default {
       this.addressInfo = { ...this.addressInfo, ...data };
     },
     getMiscs() {
-      const miscs = [];
-      const misc = {
-        miscID: this.order.adds[0].id,
-        quantity: this.order.adds[0].amount,
-      };
-      miscs.push(misc);
+      let miscs = [];
+      this.order.adds.map((el) => {
+        miscs.push({
+          miscId: el.id,
+          quantity: el.amount,
+        });
+      });
       return miscs;
     },
-    // getMiscs() {
-    //   this.order.adds
-    //     .filter((el) => el.amount > 0)
-    //     .map((el) => {
-    //       return {
-    //         miscId: el.id,
-    //         quantity: el.amount,
-    //       };
-    //     });
-    // },
     getPizzas() {
-      const pizzas = [];
-      const pizza = {
-        name: this.order.pizzas[0].name,
-        sauceId: this.pizzas.sauces.find(
-          (item) => item.class === this.order.pizzas[0].sauce.name
-        ).id,
-        doughId: this.pizzas.dough.find(
-          (item) => item.class === this.order.pizzas[0].dough.name
-        ).id,
-        sizeId: this.pizzas.sizes.find(
-          (item) => item.class === this.order.pizzas[0].size.name
-        ).id,
-        ingredients: [
-          {
-            ingredientId: 1,
-            quantity: 1,
-          },
-        ],
-        quantity: this.order.pizzas[0].amount,
-      };
-      pizzas.push(pizza);
+      let pizzas = [];
+      this.order.pizzas.map((el) => {
+        let ingredients = [];
+
+        console.log(el.ingredients[Object.keys(el.ingredients)[1]]);
+        for (let i = 0; i < el.ingredients.length; i++) {
+          ingredients.push({
+            quantity: el.ingredients[Object.keys(el.ingredients)[i]],
+            ingredientId: 2,
+          });
+        }
+
+        pizzas.push({
+          name: el.name,
+          sauceId: this.pizzas.sauces.find(
+            (item) => item.class === el.sauce.name
+          ).id,
+          doughId: this.pizzas.dough.find(
+            (item) => item.class === el.dough.name
+          ).id,
+          sizeId: this.pizzas.sizes.find((item) => item.class === el.size.name)
+            .id,
+          quantity: el.amount,
+          ingredients: ingredients,
+        });
+      });
+      console.log(pizzas);
       return pizzas;
     },
     async postOrders() {
       const data = {
         userId: this.isAuth ? this.user.id : null,
-        phone: this.addressInfo.userPhone,
+        phone: "+7 999-999-99-99",
         address: {
           street: this.addressInfo.userStreet,
           building: this.addressInfo.userHouse,
@@ -147,7 +144,6 @@ export default {
         pizzas: this.getPizzas(),
         misc: this.getMiscs(),
       };
-      console.log(data);
       await this.postOrder(data);
     },
   },

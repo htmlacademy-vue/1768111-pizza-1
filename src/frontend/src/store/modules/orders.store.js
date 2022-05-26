@@ -4,8 +4,9 @@ export default {
   getters: {},
   mutations: {},
   actions: {
-    async postOrder(order) {
-      await this.$api.orders.post(order);
+    // eslint-disable-next-line no-unused-vars
+    async postOrder({ state }, postData) {
+      await this.$api.orders.post(postData);
     },
   },
 };

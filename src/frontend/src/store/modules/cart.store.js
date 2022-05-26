@@ -82,7 +82,9 @@ export default {
       state.order.pizzas = [];
     },
     [GET_ADDS](state, adds) {
-      state.order.adds = adds;
+      for (let i = 0; i < Object.keys(adds).length; i++) {
+        state.order.adds.push(adds[i]);
+      }
     },
     [GET_PIZZAS](state, pizzas) {
       state.pizzas = pizzas;
