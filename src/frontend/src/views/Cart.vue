@@ -56,6 +56,7 @@ import { mapState, mapGetters, mapActions } from "vuex";
 import CartPizza from "@/common/components/cart/CartPizza.vue";
 import CartAdd from "@/common/components/cart/CartAdd.vue";
 import CartForm from "@/common/components/cart/CartForm.vue";
+import phoneFormatter from "phone-formatter";
 
 export default {
   name: "Cart",
@@ -106,13 +107,14 @@ export default {
       this.order.pizzas.map((el) => {
         let ingredients = [];
 
-        console.log(el.ingredients[Object.keys(el.ingredients)[1]]);
-        for (let i = 0; i < el.ingredients.length; i++) {
+        Object.entries(el.ingredients).map((item) => {
           ingredients.push({
-            quantity: el.ingredients[Object.keys(el.ingredients)[i]],
-            ingredientId: 2,
+            quantity: item[1],
+            ingredientId: this.pizzas.ingredients.find(
+              (el) => el.class === item[0]
+            ).id,
           });
-        }
+        });
 
         pizzas.push({
           name: el.name,
@@ -134,7 +136,7 @@ export default {
     async postOrders() {
       const data = {
         userId: this.isAuth ? this.user.id : null,
-        phone: "+7 999-999-99-99",
+        phone: phoneFormatter.format(this.user.phone, "+ NNN-NNN-NN-NN"),
         address: {
           street: this.addressInfo.userStreet,
           building: this.addressInfo.userHouse,
@@ -144,6 +146,7 @@ export default {
         pizzas: this.getPizzas(),
         misc: this.getMiscs(),
       };
+      console.log(data);
       await this.postOrder(data);
     },
   },
