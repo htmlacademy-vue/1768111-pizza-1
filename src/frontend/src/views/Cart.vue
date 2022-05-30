@@ -85,10 +85,6 @@ export default {
   methods: {
     ...mapActions("cart", ["clearOrder"]),
     ...mapActions("orders", ["postOrder"]),
-    async checkout() {
-      await this.$router.push("/success");
-      await this.clearOrder();
-    },
     setData(data) {
       this.addressInfo = { ...this.addressInfo, ...data };
     },
@@ -130,24 +126,32 @@ export default {
           ingredients: ingredients,
         });
       });
-      console.log(pizzas);
       return pizzas;
     },
     async postOrders() {
       const data = {
         userId: this.isAuth ? this.user.id : null,
-        phone: phoneFormatter.format(this.user.phone, "+ NNN-NNN-NN-NN"),
-        address: {
-          street: this.addressInfo.userStreet,
-          building: this.addressInfo.userHouse,
-          flat: this.addressInfo.userApartment,
-          comment: "",
-        },
+        phone: this.addressInfo.userPhone
+          ? phoneFormatter.format(
+              this.addressInfo.userPhone,
+              "+7 NNN-NNN-NN-NN"
+            )
+          : phoneFormatter.format(this.user.phone, "+7 NNN-NNN-NN-NN"),
+        address: this.addressInfo.userStreet
+          ? {
+              street: this.addressInfo.userStreet || "",
+              building: this.addressInfo.userHouse || "",
+              flat: this.addressInfo.userApartment || "",
+              comment: "",
+            }
+          : null,
         pizzas: this.getPizzas(),
         misc: this.getMiscs(),
       };
       console.log(data);
       await this.postOrder(data);
+      await this.$router.push("/success");
+      await this.clearOrder();
     },
   },
 };
