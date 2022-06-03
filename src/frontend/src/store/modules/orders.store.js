@@ -12,6 +12,7 @@ export default {
     },
     async getOrders({ state }) {
       const orders = await this.$api.orders.query();
+      state.orders = [];
       state.orders.push(...orders);
     },
     async deleteOrder({ dispatch }, orderId) {

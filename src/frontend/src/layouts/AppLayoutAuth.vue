@@ -36,7 +36,7 @@ export default {
     ...mapGetters("auth", ["isAuth"]),
     ...mapGetters("cart", ["totalPrice"]),
     imageSrc() {
-      return this.user.avatar.slice(8);
+      return this.user.avatar.slice(8) || "";
     },
   },
   methods: {

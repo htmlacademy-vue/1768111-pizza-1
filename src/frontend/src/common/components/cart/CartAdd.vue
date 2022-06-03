@@ -1,7 +1,7 @@
 <template>
   <li class="additional-list__item sheet">
     <p class="additional-list__description">
-      <img :src="this.imageSrc" width="39" height="60" :alt="add.name" />
+      <img :src="imageSrc" width="39" height="60" :alt="add.name" />
       <span>{{ add.name }}</span>
     </p>
 
