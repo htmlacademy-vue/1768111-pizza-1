@@ -18,23 +18,33 @@
       </div>
 
       <div v-if="orders.length">
-        <section v-for="order in orders" :key="order.id" class="sheet order">
+        <section
+          v-for="(order, index) in orders"
+          :key="order.id"
+          class="sheet order"
+        >
           <div class="order__wrapper">
             <div class="order__number">
               <b>Заказ #{{ order.id }}</b>
             </div>
 
             <div class="order__sum">
-              <span>Сумма заказа: 1 564 ₽</span>
+              <span>Сумма заказа: {{ ordersPrices[index] }} ₽</span>
             </div>
 
             <div class="order__button">
-              <button type="button" class="button button--border">
+              <button
+                type="button"
+                class="button button--border"
+                @click="deleteOrder(order.id)"
+              >
                 Удалить
               </button>
             </div>
             <div class="order__button">
-              <button type="button" class="button">Повторить</button>
+              <button type="button" class="button" @click="renewOrder(order)">
+                Повторить
+              </button>
             </div>
           </div>
 
@@ -56,7 +66,8 @@
           </ul>
 
           <p class="order__address">
-            Адрес доставки: {{ order.orderAddress.name }}
+            Адрес доставки:
+            {{ order.orderAddress ? order.orderAddress.name : "Самовывоз" }}
           </p>
         </section>
       </div>
@@ -65,7 +76,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import OrdersPizza from "@/common/components/orders/OrdersPizza.vue";
 import OrdersAdd from "@/common/components/orders/OrdersAdd.vue";
 
@@ -78,9 +89,15 @@ export default {
   computed: {
     ...mapState("cart", ["order", "pizzas"]),
     ...mapState("orders", ["orders"]),
+    ...mapGetters("orders", ["ordersPrices"]),
   },
   methods: {
-    ...mapActions("orders", ["getOrders"]),
+    ...mapActions("orders", ["getOrders", "deleteOrder", "repeatOrder"]),
+    ...mapActions("cart", ["repeatOrder"]),
+    async renewOrder(order) {
+      await this.repeatOrder(order);
+      await this.$router.push({ name: "Cart" });
+    },
   },
   async mounted() {
     await this.getOrders();

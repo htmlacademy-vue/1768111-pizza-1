@@ -88,7 +88,47 @@ export default {
     setData(data) {
       this.addressInfo = { ...this.addressInfo, ...data };
     },
-    getMiscs() {
+    // getMiscs() {
+    //   let miscs = [];
+    //   this.order.adds.map((el) => {
+    //     miscs.push({
+    //       miscId: el.id,
+    //       quantity: el.amount,
+    //     });
+    //   });
+    //   return miscs;
+    // },
+    // getPizzas() {
+    //   let pizzas = [];
+    //   this.order.pizzas.map((el) => {
+    //     let ingredients = [];
+
+    //     Object.entries(el.ingredients).map((item) => {
+    //       ingredients.push({
+    //         quantity: item[1],
+    //         ingredientId: this.pizzas.ingredients.find(
+    //           (el) => el.class === item[0]
+    //         ).id,
+    //       });
+    //     });
+
+    //     pizzas.push({
+    //       name: el.name,
+    //       sauceId: this.pizzas.sauces.find(
+    //         (item) => item.class === el.sauce.name
+    //       ).id,
+    //       doughId: this.pizzas.dough.find(
+    //         (item) => item.class === el.dough.name
+    //       ).id,
+    //       sizeId: this.pizzas.sizes.find((item) => item.class === el.size.name)
+    //         .id,
+    //       quantity: el.amount,
+    //       ingredients: ingredients,
+    //     });
+    //   });
+    //   return pizzas;
+    // },
+    async postOrders() {
       let miscs = [];
       this.order.adds.map((el) => {
         miscs.push({
@@ -96,9 +136,6 @@ export default {
           quantity: el.amount,
         });
       });
-      return miscs;
-    },
-    getPizzas() {
       let pizzas = [];
       this.order.pizzas.map((el) => {
         let ingredients = [];
@@ -126,9 +163,6 @@ export default {
           ingredients: ingredients,
         });
       });
-      return pizzas;
-    },
-    async postOrders() {
       const data = {
         userId: this.isAuth ? this.user.id : null,
         phone: this.addressInfo.userPhone
@@ -145,12 +179,11 @@ export default {
               comment: "",
             }
           : null,
-        pizzas: this.getPizzas(),
-        misc: this.getMiscs(),
+        pizzas: pizzas,
+        misc: miscs,
       };
-      console.log(data);
       await this.postOrder(data);
-      await this.$router.push("/success");
+      await this.$router.push({ name: "SuccessPopup" });
       await this.clearOrder();
     },
   },

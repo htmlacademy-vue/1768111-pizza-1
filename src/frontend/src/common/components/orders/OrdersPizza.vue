@@ -29,7 +29,7 @@
     </div>
 
     <p class="order__price">
-      {{ pizza.quantity > 1 ? `x${pizza.quantity}` : "" }}{{ pizzaPrice }} ₽
+      {{ pizzaPrice }} ₽ {{ pizza.quantity > 1 ? `x${pizza.quantity}` : "" }}
     </p>
   </div>
 </template>

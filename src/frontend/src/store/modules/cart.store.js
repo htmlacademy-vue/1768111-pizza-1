@@ -5,7 +5,9 @@ import {
   CLEAR_ORDER,
   GET_ADDS,
   GET_PIZZAS,
+  REPEAT_ORDER,
 } from "@/store/mutations-types.js";
+import { getIngredientsList } from "@/common/helpers.js";
 import Vue from "vue";
 import { normalizeOrderAdds, normalizePizzas } from "@/common/helpers.js";
 
@@ -51,7 +53,7 @@ export default {
     [UPDATE_ORDER](state, order) {
       if (!order.id) {
         order.amount = 1;
-        order.id = Math.random().toString(16).slice(2);
+        order.id = state.order.pizzas.length;
         state.order.pizzas.push(order);
       } else {
         state.order.pizzas[
@@ -89,6 +91,41 @@ export default {
     [GET_PIZZAS](state, pizzas) {
       state.pizzas = pizzas;
     },
+    [REPEAT_ORDER](state, orderToRepeat) {
+      state.order.adds.forEach(
+        (add) =>
+          (add.amount = orderToRepeat.orderMisc.find(
+            (misc) => misc.miscId === add.id
+          ).quantity)
+      );
+      orderToRepeat.orderPizzas.forEach((pizza) => {
+        let ingredients = getIngredientsList(state.pizzas.ingredients);
+        for (let i = 0; i < Object.keys(ingredients).length; i++) {
+          ingredients[Object.keys(ingredients)[i]] =
+            pizza.ingredients[i].quantity;
+        }
+        state.order.pizzas.push({
+          dough: {
+            name: state.pizzas.dough.find((dough) => dough.id === pizza.doughId)
+              .class,
+          },
+          size: {
+            name: state.pizzas.sizes.find((size) => size.id === pizza.sizeId)
+              .class,
+          },
+          sauce: {
+            name: state.pizzas.sauces.find(
+              (sauce) => sauce.id === pizza.sauceId
+            ).class,
+          },
+          ingredients: ingredients,
+          name: pizza.name,
+          price: 700,
+          id: state.order.pizzas.length,
+          amount: pizza.quantity,
+        });
+      });
+    },
   },
   actions: {
     updateOrder({ commit }, newOrder) {
@@ -102,6 +139,10 @@ export default {
     },
     clearOrder({ commit }) {
       commit(CLEAR_ORDER);
+    },
+    repeatOrder({ commit }, orderToRepeat) {
+      commit(CLEAR_ORDER);
+      commit(REPEAT_ORDER, orderToRepeat);
     },
     async getAdds({ commit }) {
       const adds = await this.$api.misc.query();
