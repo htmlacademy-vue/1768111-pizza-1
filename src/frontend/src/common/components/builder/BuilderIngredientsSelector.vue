@@ -7,7 +7,7 @@
         <div class="ingredients__sauce">
           <p>Основной соус:</p>
           <label
-            v-for="sauce in sauces"
+            v-for="sauce in pizzas.sauces"
             :key="sauce.id"
             class="radio ingredients__input"
           >
@@ -26,7 +26,7 @@
 
           <ul class="ingredients__list">
             <BuilderIngredientSelector
-              v-for="ingredient in ingredients"
+              v-for="ingredient in pizzas.ingredients"
               :key="ingredient.class"
               :ingredient="ingredient"
               :orderIngredients="orderIngredients"
@@ -42,15 +42,12 @@
 <script>
 import BuilderIngredientSelector from "@/common/components/builder/BuilderIngredientSelector.vue";
 import RadioButton from "@/common/components/RadioButton.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "BuilderIngredientsSelector",
   components: { RadioButton, BuilderIngredientSelector },
   props: {
-    ingredients: {
-      type: Array,
-      required: true,
-    },
     orderIngredients: {
       type: Object,
       required: true,
@@ -59,10 +56,9 @@ export default {
       type: Object,
       required: true,
     },
-    sauces: {
-      type: Array,
-      required: true,
-    },
+  },
+  computed: {
+    ...mapState("cart", ["pizzas"]),
   },
   methods: {
     setSauce(evt) {

@@ -1,7 +1,7 @@
 .layout__sidebar {
   position: fixed;
   z-index: 2;
-  top: 64px;
+  top: 62px;
   left: 0;
 
   width: 180px;
@@ -52,6 +52,7 @@
 
 .layout__content {
   padding-top: 22px;
+  padding-bottom: 22px;
   padding-right: 2.12%;
   padding-left: 200px;
 }

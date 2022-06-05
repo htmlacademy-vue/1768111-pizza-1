@@ -3,17 +3,21 @@ import {
   UPDATE_AMOUNT,
   DELETE_PIZZA,
   CLEAR_ORDER,
+  GET_ADDS,
+  GET_PIZZAS,
+  REPEAT_ORDER,
 } from "@/store/mutations-types.js";
+import { getIngredientsList } from "@/common/helpers.js";
 import Vue from "vue";
-import adds from "@/static/misc.json";
-import { normalizeOrderAdds } from "@/common/helpers.js";
+import { normalizeOrderAdds, normalizePizzas } from "@/common/helpers.js";
 
 export default {
   namespaced: true,
   state: {
+    pizzas: {},
     order: {
       pizzas: [],
-      adds: normalizeOrderAdds(adds),
+      adds: [],
     },
   },
   getters: {
@@ -49,7 +53,7 @@ export default {
     [UPDATE_ORDER](state, order) {
       if (!order.id) {
         order.amount = 1;
-        order.id = Math.random().toString(16).slice(2);
+        order.id = state.order.pizzas.length;
         state.order.pizzas.push(order);
       } else {
         state.order.pizzas[
@@ -79,6 +83,49 @@ export default {
     [CLEAR_ORDER](state) {
       state.order.pizzas = [];
     },
+    [GET_ADDS](state, adds) {
+      for (let i = 0; i < Object.keys(adds).length; i++) {
+        state.order.adds.push(adds[i]);
+      }
+    },
+    [GET_PIZZAS](state, pizzas) {
+      state.pizzas = pizzas;
+    },
+    [REPEAT_ORDER](state, orderToRepeat) {
+      state.order.adds.forEach(
+        (add) =>
+          (add.amount = orderToRepeat.orderMisc.find(
+            (misc) => misc.miscId === add.id
+          ).quantity)
+      );
+      orderToRepeat.orderPizzas.forEach((pizza) => {
+        let ingredients = getIngredientsList(state.pizzas.ingredients);
+        for (let i = 0; i < Object.keys(ingredients).length; i++) {
+          ingredients[Object.keys(ingredients)[i]] =
+            pizza.ingredients[i].quantity;
+        }
+        state.order.pizzas.push({
+          dough: {
+            name: state.pizzas.dough.find((dough) => dough.id === pizza.doughId)
+              .class,
+          },
+          size: {
+            name: state.pizzas.sizes.find((size) => size.id === pizza.sizeId)
+              .class,
+          },
+          sauce: {
+            name: state.pizzas.sauces.find(
+              (sauce) => sauce.id === pizza.sauceId
+            ).class,
+          },
+          ingredients: ingredients,
+          name: pizza.name,
+          price: 700,
+          id: state.order.pizzas.length,
+          amount: pizza.quantity,
+        });
+      });
+    },
   },
   actions: {
     updateOrder({ commit }, newOrder) {
@@ -92,6 +139,27 @@ export default {
     },
     clearOrder({ commit }) {
       commit(CLEAR_ORDER);
+    },
+    repeatOrder({ commit }, orderToRepeat) {
+      commit(CLEAR_ORDER);
+      commit(REPEAT_ORDER, orderToRepeat);
+    },
+    async getAdds({ commit }) {
+      const adds = await this.$api.misc.query();
+      commit(GET_ADDS, normalizeOrderAdds(adds));
+    },
+    async getPizzas({ commit }) {
+      const dough = await this.$api.dough.query();
+      const ingredients = await this.$api.ingredients.query();
+      const sauces = await this.$api.sauces.query();
+      const sizes = await this.$api.sizes.query();
+      const pizzas = {};
+      pizzas.dough = dough;
+      pizzas.ingredients = ingredients;
+      pizzas.sauces = sauces;
+      pizzas.sizes = sizes;
+      const normalizedPizzas = normalizePizzas(pizzas);
+      commit(GET_PIZZAS, normalizedPizzas);
     },
   },
 };
