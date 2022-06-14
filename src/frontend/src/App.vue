@@ -1,7 +1,14 @@
 <template>
   <div id="app">
     <AppLayout>
-      <router-view />
+      <transition
+        name="slide"
+        appear
+        mode="out-in"
+        enter-active-class="animate__animated animate__slideInRight"
+      >
+        <router-view />
+      </transition>
     </AppLayout>
   </div>
 </template>
@@ -10,6 +17,7 @@
 import AppLayout from "@/layouts/AppLayout.vue";
 import { setAuth } from "@/common/helpers";
 import { mapActions } from "vuex";
+import "animate.css";
 
 export default {
   name: "App",

@@ -88,46 +88,6 @@ export default {
     setData(data) {
       this.addressInfo = { ...this.addressInfo, ...data };
     },
-    // getMiscs() {
-    //   let miscs = [];
-    //   this.order.adds.map((el) => {
-    //     miscs.push({
-    //       miscId: el.id,
-    //       quantity: el.amount,
-    //     });
-    //   });
-    //   return miscs;
-    // },
-    // getPizzas() {
-    //   let pizzas = [];
-    //   this.order.pizzas.map((el) => {
-    //     let ingredients = [];
-
-    //     Object.entries(el.ingredients).map((item) => {
-    //       ingredients.push({
-    //         quantity: item[1],
-    //         ingredientId: this.pizzas.ingredients.find(
-    //           (el) => el.class === item[0]
-    //         ).id,
-    //       });
-    //     });
-
-    //     pizzas.push({
-    //       name: el.name,
-    //       sauceId: this.pizzas.sauces.find(
-    //         (item) => item.class === el.sauce.name
-    //       ).id,
-    //       doughId: this.pizzas.dough.find(
-    //         (item) => item.class === el.dough.name
-    //       ).id,
-    //       sizeId: this.pizzas.sizes.find((item) => item.class === el.size.name)
-    //         .id,
-    //       quantity: el.amount,
-    //       ingredients: ingredients,
-    //     });
-    //   });
-    //   return pizzas;
-    // },
     async postOrders() {
       let miscs = [];
       this.order.adds.map((el) => {

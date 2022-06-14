@@ -183,7 +183,7 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      if (!this.pizzaToOrder.ingredients.hasOwnProperty("ham"))
+      if (!Object.prototype.hasOwnProperty.call(this.pizzaToOrder, "ham"))
         this.setDefaultSettings();
     }, 500);
   },
