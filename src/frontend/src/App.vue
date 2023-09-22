@@ -1,12 +1,7 @@
 <template>
   <div id="app">
     <AppLayout>
-      <transition
-        name="slide"
-        appear
-        mode="out-in"
-        enter-active-class="animate__animated animate__slideInRight"
-      >
+      <transition name="fade" mode="out-in" appear>
         <router-view />
       </transition>
     </AppLayout>
@@ -17,7 +12,6 @@
 import AppLayout from "@/layouts/AppLayout.vue";
 import { setAuth } from "@/common/helpers";
 import { mapActions } from "vuex";
-import "animate.css";
 
 export default {
   name: "App",
@@ -43,4 +37,14 @@ export default {
 
 <style lang="scss">
 @import "~@/assets/scss/app";
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

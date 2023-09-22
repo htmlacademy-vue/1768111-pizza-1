@@ -52,7 +52,6 @@ export default {
   mutations: {
     [UPDATE_ORDER](state, order) {
       if (!order.id) {
-        console.log(!order.id);
         order.amount = 1;
         order.id = state.order.pizzas.length + 1;
         state.order.pizzas.push(order);
