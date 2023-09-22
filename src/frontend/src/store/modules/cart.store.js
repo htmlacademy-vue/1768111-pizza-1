@@ -53,7 +53,7 @@ export default {
     [UPDATE_ORDER](state, order) {
       if (!order.id) {
         order.amount = 1;
-        order.id = state.order.pizzas.length;
+        order.id = state.order.pizzas.length + 1;
         state.order.pizzas.push(order);
       } else {
         state.order.pizzas[

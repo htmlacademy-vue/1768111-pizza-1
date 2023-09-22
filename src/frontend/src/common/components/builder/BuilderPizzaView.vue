@@ -18,16 +18,18 @@
     <div class="content__constructor">
       <div class="pizza" :class="getFoundationClass">
         <div class="pizza__wrapper">
-          <div
-            v-for="(ingredient, name) in this.pizzaToOrder.ingredients"
-            :key="name + ingredient"
-            class="pizza__filling"
-            :class="[
-              ingredient >= 1 ? 'pizza__filling--' + name : '',
-              ingredient == 2 ? 'pizza__filling--second' : '',
-              ingredient == 3 ? 'pizza__filling--third' : '',
-            ]"
-          ></div>
+          <transition-group name="ingredients">
+            <div
+              v-for="(ingredient, name) in this.pizzaToOrder.ingredients"
+              :key="name + ingredient"
+              class="pizza__filling"
+              :class="[
+                ingredient >= 1 ? 'pizza__filling--' + name : '',
+                ingredient == 2 ? 'pizza__filling--second' : '',
+                ingredient == 3 ? 'pizza__filling--third' : '',
+              ]"
+            ></div>
+          </transition-group>
         </div>
       </div>
     </div>
@@ -76,3 +78,17 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+// Transitions
+.ingredients-enter-active,
+.ingredients-leave-active {
+  transition: transform 0.5s, opacity 0.6s;
+  transition-timing-function: ease;
+}
+.ingredients-enter,
+.ingredients-leave-to {
+  transform: scale(1.2);
+  opacity: 0;
+}
+</style>
