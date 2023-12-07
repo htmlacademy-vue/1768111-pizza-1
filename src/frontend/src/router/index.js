@@ -6,31 +6,31 @@ import { middlewarePipeline } from "@/middlewares";
 
 Vue.use(Router);
 
-const router = new Router({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
-});
+export default Promise.all(routes).then((routes) => {
+  const router = new Router({
+    mode: "history",
+    base: process.env.BASE_URL,
+    routes,
+  });
 
-router.beforeEach((to, from, next) => {
-  const middlewares = to.meta.middlewares;
+  router.beforeEach((to, from, next) => {
+    const middlewares = to.meta.middlewares;
 
-  if (!middlewares?.length) {
-    return next();
-  }
+    if (!middlewares?.length) {
+      return next();
+    }
 
-  const context = { to, from, next, store };
-  const firstMiddlewareIndex = 0;
-  const nextMiddlewareIndex = 1;
+    const context = { to, from, next, store };
+    const firstMiddlewareIndex = 0;
+    const nextMiddlewareIndex = 1;
 
-  return middlewares[firstMiddlewareIndex]({
-    ...context,
-    nextMiddleware: middlewarePipeline(
-      context,
-      middlewares,
-      nextMiddlewareIndex
-    ),
+    return middlewares[firstMiddlewareIndex]({
+      ...context,
+      nextMiddleware: middlewarePipeline(
+        context,
+        middlewares,
+        nextMiddlewareIndex
+      ),
+    });
   });
 });
-
-export default router;
